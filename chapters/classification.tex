@@ -1,0 +1,21 @@
+\section{classification}
+
+\subsection{Loss Functions}
+General: $\hat y = sign(w^T x)$\\
+Decision boundary: $\{x : w^Tx = 0\}$\\
+Perceptron:$\hat w = \argmin_w \frac{1}{n}\sum_i max(0, -y_iw^T x_i)$\\
+SVM:$\hat w = \argmin_w C\sum_i max(0, 1-y_iw^T x_i) + \frac{1}{2}\norm{w}_2^2$,
+HardSVM: if constrained and $C\rightarrow \infty$, then there is no solution if data not linearly separable,
+Unique solution if $C<\infty$. Can use $\lambda\norm{w}_2^2 \text{ instead of } C$
+
+
+\subsection{Metrics}
+$Accuracy = \frac{TP + TN}{n}$,
+$TPR = Recall = \prob{\hat{y}=1}[y=1] =\frac{TP}{TP + FN} = 1-FNR \in [0, 1]$,
+$FPR = \prob{\hat{y}=1}[y=0]= \frac{FP}{TN + FP} $,
+$FNR = \frac{FN}{TP + FN}$,
+$FDR = \frac{FP}{FP+TP}$,
+$Precision = 1- FDR = \frac{TP}{TP + FP}\in [0, 1]$,
+$\text{F1} = \frac{2TP}{2TP + FP + FN} = \frac{2}{\frac{1}{recall} + \frac{1}{precsision}} \in [0, 1]$,
+$ROC: y=TPR, x=FPR$
+

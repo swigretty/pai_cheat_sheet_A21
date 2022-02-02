@@ -1,0 +1,77 @@
+\usepackage{color}\section{GPs}
+
+\subsection{Baysian Linear Regression}
+$Y= Xw + \epsilon$, $\color{red} \epsilon \sim \mathcal{N}(0, \sigma_{n}^{2})$, $w\sim \mathcal{N}(0, \sigma_{p}^{2})$
+$\prob{y_{i}|w}=\mathcal{N}(y_{i}; x_{i}^{\top}w, \sigma_{n}^{2})$
+
+$\begin{bmatrix} w \\ y\end{bmatrix} = \begin{bmatrix} 1 \\ X\end{bmatrix} w + \begin{bmatrix} 0 \\ 1 \end{bmatrix}\epsilon$\\
+$\sim \mathcal{N}\bb{\begin{bmatrix} \mu_{w} \\ X\mu_{w}\end{bmatrix},
+    \begin{bmatrix} COV(w) & Cov(w,y)^{\top} \\ Cov(w,y) & COV(y)\end{bmatrix}}$
+$COV(w)=\sigma_{p}^{2} \presript{_{d}}I_{d},\ Cov(w,y)=Cov(w,Xw+\epsilon)=XCOV(w)=X\sigma_{p}^{2},\
+COV(y)=XCOV(w)X^{\top} + COV(\epsilon)$
+
+$\prob{w|X,y}=\mathcal{N}(\bar{\mu}, \bar{\Sigma}),\
+\bar{\Sigma}=(\frac{1}{\sigma_{n}^{2}}X^{\top}X+\frac{1}{\sigma_{p}^{2}}I)^{-1},\
+\bar{\mu}=\frac{1}{\sigma_{n}^{2}}\bar{\Sigma}X^{\top}y$\\
+\textbf{Prediction:} $\prob{y^{*}|X,y,x^{*}} = \mathcal{N}(y^{*}; \bar{\mu}^{\top}x^{*},
+x^{*}^{\top}\bar{\Sigma}x^{*} + \sigma_{n}^{2}) = \int \prob{y^{*}|f^{*}} \prob{f^{*}| X, y, x^{*}} df^{*}$\\
+$\prob{f^{*}| X, y, x^{*}} = \mathcal{N}(f^{*}; \bar{\mu}^{\top}x^{*}, x^{*}^{\top}\bar{\Sigma}x^{*})$
+
+\subsection{Kalman Filters}
+$X_{t+1}=\lambda X_{t}+\epsilon,\ \epsilon \sim \mathcal{N}(0, \sigma_{x}^{2})$
+$Y_{t} = X_{t} + \nu,\ \nu \sim \mathcal{N}(0, \sigma_{y}^{2})$ \\
+Assume knwon: $\prob{X_{t}|y_{1:t}}=\mathcal{N}(\mu_{t}, \sigma_{t}^{2})$ \\
+Prediction: $X_{t+1}|y_{1:t} = \lambda x_{t}|y_{1:t} + \epsilon \sim
+\mathcal{N}(\lambda \mu_{t}, \lambda^{2}\sigma_{t}^{2}+\sigma_{x}^{2})$
+Conditioning:
+$\begin{bmatrix} x_{t+1}|y_{1:t} \\ y_{t+1}|y_{1:t}\end{bmatrix} =
+\begin{bmatrix} 1 \\ 1 \end{bmatrix} x_{t+1}|y_{1:t} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} \nu
+\sim \mathcal{N}(\lambda \mu_{t},
+\begin{bmatrix} \lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x} & \lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x} \\
+\lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x} & \lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x} + \sigma^{2}_{y}
+\end{bmatrix})$
+$k_{t+1} = \frac{\lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x}}{\lambda^{2} \sigma^{2}_{t} + \sigma^{2}_{x} + \sigma^{2}_{y}}$\\
+As GP:
+$f(t) = x_{t} = x_{t-1} + \epsilon_{t-1},\ x_{0} \sim \mathcal{N}(0, \sigma_{0}^{2}),\
+\epsilon_{t} \sim \mathcal{N}(0, \sigma_{x}^{2}),\ f(t) \sim GP(\mu(t), k(t, t'))$,
+$\mu(t) = 0 \Forall {t>0}, k(t,t')=Var(x_{0}+ \sum_{i=0}^{t-1}\epsilon_{i}) = \sigma_{0}^{2} + t\sigma_{x}^{2}$,
+Wiener Process: $k(t,t') = COV(f(t,t')) = \sigma_{0}^{2}+\sigma_{x}^{2}\min\{t,t1\}$
+
+
+\subsection{GP}
+$y_{A}=f(x_{A})+\epsilon_{A},\ f\sim GP(\mu, k), A=\{1,..n\}$
+$\begin{bmatrix} f(x) \\ y_{A}\end{bmatrix} = \begin{bmatrix} 1 \\ 1\end{bmatrix} f + \begin{bmatrix} 0 \\ 1 \end{bmatrix}\epsilon_{A}$
+$\sim \mathcal{N}\bb{\begin{bmatrix} \mu \\ \mu\end{bmatrix},
+    \begin{bmatrix} k(x,x') & k_{Ax}^{\top} \\ k_{Ax} & K_{AA}+\sigma_{n}^{2}I_{n}\end{bmatrix}}$
+$f|y_{A} \sim GP(\bar{\mu}, \bar{\Sigma})$,
+$\bar{\mu}(x) = \mu(x) + k_{x,A}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}(y_{A}-\mu(x_{A})$,
+$\bar{k}(x,x')= k(x,x')-k_{xA}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}k_{xA}$\\
+Online update:
+$f_{t} \sim GP(\mu_{t}, k_{t})$, $y_{t}=f(x_{t})+\epsilon_{t}$
+$\begin{bmatrix} f|y_{1:t}(x') \\ f|y_{1:t}(x'')\\ y_{t+1}\end{bmatrix} =
+\begin{bmatrix} f_{t}(x') \\ f_{t}(x'') \\ f_{t}(x_{t+1}) \end{bmatrix} +
+\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}\epsilon_{t+1}$
+$\sim \mathcal{N}\bb{\begin{bmatrix} \mu_{t}(x') \\ \mu_{t}(x'') \\ \mu_{t}(x_{t+1}) \end{bmatrix}, K_{x',x'',x_{t+1}}}$,
+$K_{x',x'',x_{t+1}} = \begin{bmatrix} k_{t}(x',x') & k_{t}(x',x'') & k_{t}(x',x_{t+1})\\
+    k_{t}(x',x'') & k_{t}(x'',x'') & k_{t}(x'',x_{t+1}) \\
+    k_{t}(x_{t+1},x') & k_{t}(x_{t+1},x'') & k_{t}(x_{t+1},x_{t+1})+\sigma_{n}^{2}\end{bmatrix}$
+
+
+\subsection{Baysian Model Selection}
+Max Marginal likelihood: $\prob{y|x, \theta} = \int \prob {y|f,x,\theta}p(f|\theta)df$
+\textbf{Underfit:} prior is large and informed (small $\sigma_{p}^{2}$), likelihood flat (small for most f), Marginal likl. most mass on y close to prior mean
+\textbf{Overfit:} prior is small and uninformed (large $\sigma_{p}^{2}$), likelihood large for a few f, Marginal likl flat
+
+
+\subsection{Computational Complexity}
+\begin{itemize}
+    \item BLR: $\bar{\Sigma},\bar{\mu} = \mathcal{O}(nd^{2})$, GP: $\bar{k},\bar{\mu} = \mathcal{O}(n^{3})$
+    \item FITC: $\mathcal{O}((\# of inducing points)^{3}) = \mathcal{O}(n)$
+    \item Fourrier Features = $\mathcal{O}(nm^{2}+m^{3})$
+    \begin{itemize}
+        \item construct feater map $z(x)= \sqrt {\frac{2}{D}}\left[ \cos(\omega_{1}^{\top}x +b_{1}),
+            ...\cos(\omega_{m}^{\top}x +b_{m}) \right], \omega \sim$ "fourier trans of kernel",
+        $b \sim \text{Unif}(\left[ 0,2\pi \right])$
+    \end{itemize}
+\end{itemize}
+

@@ -1,0 +1,62 @@
+\section{EM}
+\subsection{General EM for MLE and MAP}
+Maximizes lower bound on $\log\prob{X}[\theta]=\log\E[Z \sim R]{\frac{\prob{X,Z}[\theta]}{R(Z)}}$
+E-Step: Max wrt to R (fixed $\theta$) $\rightarrow R^{*}(Z)=\prob{Z}[X,\theta]=\rho$.
+M-Step: Max wrt to $\theta$ (fixed R)
+\begin{enumerate}
+  \item
+  E-Step: Calculate the expected completed data log-likelihood, which is a function of $\theta$:
+  $
+    Q(\theta;\theta^{(t-1)}) = \E[z_{1:n}]{\log\underbrace{\prob{\bm{x}_{1:n}, z_{1:n}}[\theta]}_{
+      \overset{\text{i.i.d.}}{=}\prod_{i=1}^{n}\prob{\bm{x}_{i}, z_{i}}[\theta]} \:|\: \bm{x}_{1:n}, \theta^{(t-1)}}
+  $
+  $
+  \rho_{j}^{(t)}(\bm{x}_{i}) &= \prob{Z_{i} = j}[\bm{x}_{i}, \theta^{(t-1)}] \\
+  \overset{\text{Bayes}}&{=} \frac{\prob{Z_{i} = j}[\theta^{(t-1)}]\prob{\bm{x}_{i}}[Z_{i} = j,
+      \theta^{(t-1)}]}{\sum_{l=1}^{k}\prob{Z_{i} = l}[\theta^{(t-1)}]\prob{\bm{x}_{i}}[Z_{i} = l, \theta^{(t-1)}]}
+  $
+  \item
+  M-Step for MLE:
+  $
+    \theta^{(t)} = \argmax_{\theta} Q(\theta; \theta^{(t-1)})
+  $
+  M-Step for MAP:
+  $
+    \theta^{(t)} = \argmax_{\theta} Q(\theta;\theta^{(t-1)}) + \log\prob{\theta}
+  $
+\end{enumerate}
+$
+  Q(\theta; \theta^{(t-1)}) = \sum_{i=1}^{n}\sum_{j = 1}^{k} \rho_{j}(\bm{x}_{i})\log\prob{\bm{x}_{i}, Z_{i} = j}[\theta],\
+$
+
+\subsubsection{Hard-EM}
+E-Step: $z_{i}^{(t)} = \argmax_{j}\rho_{j}^{(t)}(\bm{x}_{i})$,
+M-Step: $\theta_{MLE} = (\hat{\mu}_{j}, \hat{\Sigma}_{j}, w_{j}=\hat{P}_{MLE}(Z=j))$ as in GBC for GMM.
+\subsubsection{GMM}
+$\prob{\bm{x}_{i}}[Z_{i} = j, \theta] = \mathcal{N}(\bm{x}_{i}; \mu_{j}, \Sigma_{j})$
+M-step: $w_{j}^{(t)} = \frac{1}{n}\sum_{i=1}^{n}\rho_{j}^{(t)}(\bm{x}_{i}), \
+        \bm{\mu}_{j}^{(t)} = \frac{\sum_{i=1}^{n}\rho_{j}^{(t)}(\bm{x}_{i})\bm{x}_{i}}{\sum_{i=1}^{n}\rho_{j}^{(t)}(\bm{x}_{i})}, \
+        \bm{\Sigma}_{j}^{(t)} = \frac{\sum_{i=1}^{n} \rho_{j}^{(t)}(\bm{x}_{i})(\bm{x}_{i} -
+\bm{\mu}_{j}^{(t)})(\bm{x}_{i} - \bm{\mu}_{j}^{(t)})^{\top}}{\sum_{i=1}^{n}\rho_{j}^{(t)}(\bm{x}_{i})}$\\
+
+\begin{itemize}
+  \item $D=\{x_{1}...x_{n}\}$ generated with GMM
+  \begin{itemize}
+    \item $x_{i}$ ind. of each other: $p(x)=\sum_{j}w_{j}\mathcal{N}(\mu_{j}\Sigma_{j})$
+    \item $x_{i}$ ind. of each other cond. they are sampled from the same mixture comp.
+    $\prob{\bm{x}_{i}}[Z_{i} = j, \theta] = \mathcal{N}(\bm{x}_{i}; \mu_{j}, \Sigma_{j})$
+  \end{itemize}
+  \item EM always converges to local optimum or saddle point, regardless of init. (every iteration
+  non striclty increases marginal likelihood of the data)
+  \item Can use GD to learn $\theta$ and z
+\end{itemize}
+
+
+\section{GAN}
+\begin{itemize}
+  \item are modular NN arch. compromised of generator and discriminator
+  \item training GANs require finding saddle point rather than local optimum (minimax game)
+  \item Challenge: evaluation (No log-likelihood), mode collapse, oscillation, data memor.
+  \item For a fixed Generator the optimal discriminator $D^{*}_{G}(x) =
+  \frac{P_{data}(x)}{P_{G}(x)+P_{data}(x)}=\text{the prob of being real}$
+\end{itemize}

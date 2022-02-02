@@ -1,0 +1,37 @@
+\section{Decision Theroy}
+
+\subsection{Disc. vs. Gen.}
+Disc.: $\prob{x,y} = \prob{y}[x, \theta]\prob{x}$, i.e. only depends on $\theta$ via $\prob{y}[x, \theta]$ ($\prob{x}$
+not modeled).
+Gen.: $\prob{x, y} = \prob{x}[y, \gamma]\prob{y}[\pi]$, model prior $\prob{y}[\pi]$,
+estimate $\prob{x}[y, \gamma]$ (X|Y cond. independ.), predict using Bayes.
+
+\subsection{Decision boundary}
+is where ($\hat{\theta}$ are estimates of $\theta$)
+$
+  \prob{Y = 1}[\bm{x}, \hat{\theta}] = \prob{Y = -1}[\bm{x}, \hat{\theta}] \rightarrow
+  \prob{\bm{x}}[Y = 1, \hat{\theta}]\prob{Y = 1}[\hat{\theta}]
+  = \prob{\bm{x}}[Y = -1, \hat{\theta}]\prob{Y = -1}[\hat{\theta}]
+$
+To predict the label of a new $\bm{x}$, we calculate
+$
+  \hat{y} &= \argmax_{j \in \cset{-1, 1}}\prob{Y = j}[\bm{x}, \hat{\theta}]
+  = \argmax_{j \in \cset{-1, 1}}\prob{\bm{x}}[Y = j, \hat{\theta}]\prob{Y = j}[\hat{\theta}]
+$
+
+\subsection{GBC}
+$\theta = (\gamma, \pi)=\{\mu_{j}, \Sigma_{j}, \w_{j}\}_{j=1}^{m}$ with m classes\\
+$w_{j}=\hat{P}_{MLE}(Y=j) = \frac{1}{n}\sum_{i=1}^{n}1\{y_{i}=j\}$\\
+$\hat{P}_{MLE}(\bm{x}|Y=j) = \mathcal{N}(\bm{x}; \mu_{j}, \Sigma_{j}),\ \bm{x} \in R^{d}$,
+$\hat{\mu}_{j} = \frac{1}{\sum_{i=1}^{n}1\{y_{i}=j\}}\sum_{i: y_{i}=j}x_{i} \in R^{d}$,
+$\hat{\Sigma}_{j} = \frac{1}{\sum_{i=1}^{n}1\{y_{i}=j\}}
+\sum_{i: y_{i}=j}(x_{i}-\hat{\mu}_{j})(x_{i}-\hat{\mu}_{j})^{\top} \in R^{dxd}$\\
+Pred for $\x^{*}$: $\hat{y^{*}}= \argmax_{j}\hat{P}(Y=j|\x^{*})
+=\argmax_{j}\hat{P}(Y=j)\hat{P}(x^{*}|Y=j)$
+
+
+GBC: Arbitrary $\bm{\mu}_{j}, \bm{\Sigma}_{j}, \bm{\pi}$.
+QDA: Restricted to uniform $\bm{\pi}$.
+GNBC: Restricted to $\bm{\Sigma}_{j} = \text{diag}$.
+LDA: Restricted to uniform $\bm{\pi}$ and $\bm{\Sigma}_{j} = \bm{\Sigma}$ for all $j$.
+

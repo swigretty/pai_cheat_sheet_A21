@@ -1,0 +1,78 @@
+\section{MCMC}
+\textbf{Markov Chain}
+A series of RV: $X_{1}...X_{T}$ with prior $p(X_{1})=\pi_{1}$, transition prob $P(X_{t+1} | X_{t})$ ind. of t:
+$P(X_{t+1}| X_{1}...X_{t}) = P(X_{t+1}|X_{t})$, $t=1...T$.
+For state space $S=\{1,..n\},\ \Forall {i,j \in S} P(X_{t+1}=i| X_{t}=j) = T_{ij}$
+$\pi_{t}=p(X_{t})=\begin{bmatrix} P(X_{t}=1) \\ ... \\ P(X_{t}=n) \end{bmatrix}, \in T^{n},\ \pi_{t+1}=T^{t}\pi_{t}$,
+i.e. $\pi_{2}(i) = P(X_{2}=i) = \sum_{j=1}^{n}P(X_{2}=i|X_{1}=j)P(X_{1}=j)= \left[T\pi_{1}\right]_{i}$
+\begin{itemize}
+	\item Stationarity: $\exists \pi: \color{gray}z \color{myblue}\pi = T \color{gray}z \color{myblue}\pi
+	\rightarrow (I-H)\pi =0$
+	\item Ergodicity: $\exists t \in N: T^{t}$ contains only pos. ele.
+	\item Convergence: $\pi_{t+1} = T^{t}\pi_{1} \lim\limits_{t \to \infty} \pi$
+	\item DBE is satisfied by a M.C for a given $\pi$ if $\Forall {i,j} \in S
+	\color{gray}z \color{myblue}\pi_{i}T_{ji} = \color{gray}z \color{myblue}\pi_{j}T_{ij}$
+	\begin{itemize}
+		\item rate flow from i to j = rate flow from j to i
+		\item reversibility: $P(X_{t+1}=i|X_{t}=j) = P(X_{t}=i|X_{t+1}=j)$
+	\end{itemize}
+\end{itemize}
+Ergodic M.C convergence to unqiue stat. distr $\pi$ ind. of $\pi_{1}$\\
+M.C. satisfies DBE for $\pi \rightarrow \pi$ is stationary for M.C.
+
+\subsection{Metropolis Hastings}
+Designing M.C. i.e. find $T_{ij}$
+\begin{enumerate}
+  \item Proposal distribution $\cDist{T}{X'}{X}$\\
+  Given $X_t=x$, sample ``proposal'' $x'\sim \cDist{T}{X'}{X=x}$
+  \item Acceptance distribution:\\
+    Suppose $X_t=x$, With probability\\
+	$\alpha =
+    \min\{1,\frac{Q(x')\cDist{T}{x}{x'}}{Q(x)\cDist{T}{x'}{x}}\}$ (X discrete)\\
+	$\alpha =
+    \min\{1,\frac{\cDist{T}{x}{x'}}{\cDist{T}{x'}{x}}\exp(f(x)-f(x'))\}$ (X cont)\\
+    set $X_{t+1}=x'$\\
+    With prob. $1-\alpha$, set $X_{t+1}=x$
+\end{enumerate}
+$T_{ij}^{new} = \alpha_{ij}T_{ij}^{old} + 1 \{i=j\} \sum_{k=1}^{n}T_{kj}*(1-\alpha_{kj})$
+Columns of $T_{ij}$ need to sum to 1. \\
+Satisfies DBE, $\rightarrow \frac{1}{Z} Q(x)$ is stationary for M.C. \\
+The performance of the algorithm will strongly depend on $T$.\\
+
+\subsubsection{Continuous Random Var X}
+$Q(x) = \frac{1}{Z}\exp(-f(x))$ is log-concave if f convex.\\
+M.C. always ergodic (state space=suport, by definition pos prob everywhere)\\
+use gradient info:
+\begin{itemize}
+	\item \textbf{Mala:} Proposal $T(x'|x) = \mathcal{N}(x'; x-\tau \nabla f(x), 2 \tau I)$ \\
+	convergence to target distr. guaranteed, efficient convergence for log-concave distr.
+	\item If $T(x'|x) = \mathcal{N}(x'; x, JI) \rightarrow$ MH with $\alpha =
+	\min\{1,\exp(f(x)-f(x'))\}$
+	\item \textbf{SGLD:} use approx f, requires grad of joint prob $p(\theta, y_{1:n})$ same used for MAP
+	\begin{itemize}
+		\item $i_{1},..,i_{m} \sim \text{Unif}(\{1,..n\})$, $\epsilon_{t} \sim \mathcal{N}(0, 2\eta_{t}I)$
+		\item 	\item $\theta_{t+1} = \theta_{t}-\eta_{t}_{t}\color{orange}(\nabla \log(p(\theta_{t})) +
+		\frac{n}{m} \sum_{j=1}^{m} \eta \log p(y_{i_{j}}|\theta_{t}, x_{i_{j}}))$$+ \epsilon_{t}$
+		\item $\color{orange} \approx \nabla \E[\theta, y_{1:n}]{p(\theta, y_{1:n})}$
+		\item if $\eta_{t} \in \Theta(t^{-(1/3)})$ guaranteed to converge to stat. distr.
+	\end{itemize}
+\end{itemize}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+State $X^{(t)} \in R^{d}$, $X_{-i}^{(t)} \in R^{d-1}$\\
+init $x^{0}$\;
+\For{$t\gets 1$ \KwTo $\infty$}{
+	$I \sim \text{Unif}(\set{1,\ldots,d})$\;
+	$x_{i}^{t+1} =
+	\begin{cases}
+      x_{i}^{t} & \text{if $i \neq I$}\\
+      x \sim \pi(\cdot| x_{-I}^{t}) & \text{if $i = I$}\\
+    \end{cases}$
+}
+\caption{Gibbs Sampling:}
+\end{algorithm}
+$\pi(\cdot| x_{-I}^{t}) = \frac{1}{\sum_{x_{I} \in S}Q(X_{I}=x_{I}, x_{(-I)})}Q(x_{I}, x_{(-I}))$ \\
+Satisfies DBE: $\pi(x^{(t)})T(x^{(t+1)}|x^{(t)}) = \pi(x^{(t+1)})T(x^{(t)}|x^{(t+1)})$
+
+

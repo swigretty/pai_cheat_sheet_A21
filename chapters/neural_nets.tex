@@ -1,0 +1,33 @@
+\section{Neural Nets}
+
+$v^{(k)}=\varphi(z^{(k)}), z^{(k)}=W^{(k)}v^{(k-1)}, v^{(0)}=x, v^{(K)} = f(x),\ W_{ij}^{(k)} \text{ with i: el from layer k, j: k-1}$\\
+$\frac{\partial L(\bm{W})}{\partial w_{ij}^{(k)}} = \frac{\partial L}{\partial v^{(K)}}
+\frac{\partial v^{(K)}}{\partial z^{(K)}} \frac{\partial z^{(K)}}{\partial v^{(K-1)}} ...
+\frac{\partial z^{(k)}}{\partial w_{ij}^{(k)}}$
+Backprob: $\mathcal{O}(\# params)$.
+To reduce training error: add additional units, more iterations (smaller batches),
+Prevent overfitting: batch norm, regularization, early stopping, dropout
+
+\subsection{Activation functions}
+\begin{itemize}
+  \item
+  Sigmoid = $\sigma$: $\varphi(z) = \frac{1}{1 + e^{-z}},\ \varphi'(z) = (1 - \varphi(z))\varphi(z)$
+  \item tanh : $\varphi(z) = \frac{e^{z} - e^{-z}}{e^{z}+ e^{-z}} \in [-1,1],\ \varphi'(z) = 1 - \varphi(z)^{2}$
+  \item
+  ReLU: $\varphi(z) = \max(z, 0) \qquad$
+  %$\varphi'(z) = \begin{cases}1 & \text{if } z > 0, \\ 0 &\text{if } z < 0\end{cases}$
+\end{itemize}
+$\sigma$ and tanh: suffer from vanishing gradients, also shallow networks affected, depends on the trainig example,
+batch norm can help.\\
+Relu: sparsity, no vanishing gradients
+%
+
+\subsection{Conv3d}
+Number of Prameters $=(k^{\abs{S}}\cdot C_{\text{in}}+b)\cdot C_{\text{out}}$,
+where $b = 1$ if bias is used, else $0$. For $S \in \cset{D, H, W}$,
+$k$ = kernel\_size, $d$ = dilation (usually=1), $C_{\text{out}}$ = channels = \# filters,
+\[
+  S_{\text{out}} = \left\lfloor \frac{S_{\text{in}} + 2 \cdot \text{pad}[S] - \text{d}[S] \cdot (k[S] - 1) - 1}
+  {\text{stride}[S]} + 1 \right\rfloor
+\]\\
+Number of elements in the output: $= D_{\text{out}}\cdot H_{\text{out}} \cdot W_{\text{out }}\cdot C_{\text{out}}$

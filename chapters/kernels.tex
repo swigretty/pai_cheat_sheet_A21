@@ -1,0 +1,78 @@
+\section{Kernels}
+\subsection{Mercer's condition}
+$k(\bm{x},\bm{y})$ is a valid kernel if
+\begin{enumerate}
+  \item
+  It is symmetric, i.e. $k(\bm{x},\bm{y}) = k(\bm{y},\bm{x})$ and
+  \item
+  It can be expressed as an inner product, i.e. $k(\bm{\bm{x}},\bm{y}) = \dotp{\phi(\bm{x}), \phi(\bm{y})}$, which is possible
+  $
+    \Updownarrow \text{(show either inner product or p.s.d.)}
+  $
+  the kernel matrix $\bm{K} = \bm{\Phi\Phi}^{\top}$, w.r.t. $\{\bm{x}_{1}, \dots, \bm{x}_{n}\}$, def. as $(\bm{K})_{i,j} = k(\bm{x}_{i}, \bm{x}_{j}) = \phi(\bm{x}_{i})^{\top}\phi(\bm{x}_{j})$ is p.s.d., i.e.
+  $
+    \forall\bm{g} \in \R^{n}, \quad \bm{g}^{\top}\bm{K}\bm{g} = \sum_{i=1}^{n}\sum_{j=1}^{n}g_{i}(\bm{K})_{i,j}g_{j} \geq 0.
+  $
+\end{enumerate}
+
+\subsection{Valid Kernels}
+The following are all valid kernels
+\begin{tabular}{c c}
+  $k(\bm{x},\bm{y}) = (\dotp{\bm{x},\bm{y}} + c)^{d}, \ c \geq 0$  & $k(\bm{x},\bm{y}) = c, \ c \geq 0$
+\end{tabular}
+  $k(\bm{x},\bm{y}) = \exp\bb{-\frac{\norm{\bm{x} - \bm{y}}^{\alpha}}{\tau}},\ \alpha \geq 0, \tau > 0$ \\
+  $k(x,y) = \min(x, y),\ x,y \in \R^{+} \text{ or } x,y \in [0,1]$\\
+  $\frac{1}{\max{(x,y)}}=\min{(\frac{1}{x}, \frac{1}{y})}$\\
+  $k(\bm{x},\bm{y}) = \bm{x}^{\top} \bm{M} \bm{y},\ if \bm{M} \geq 0$\\
+  $k(\bm{x},\bm{y}) = \cos(x-y),\ x,y \in \R$ , but not $\cos(x+y)$\\
+  $k(\bm{x},\bm{y}) = 2^{xy} = \exp(xy\log(2)),\ x,y \in \N$
+%
+\subsection{Poly. kernel}
+The feature map of $(\dotp{\bm{x},\bm{y}} + c)^{2}$ is $\phi(\bm{x}) = [x_{2}^{2}, x_{1}^{2},
+\sqrt{2}x_{2}x_{1}, \sqrt{2c}x_{2}, \sqrt{2c}x_{1}, c] \in \R^{\binom{m+d}{d}=\binom{n+d}{n} =
+\text{\# of monom. of deg.} \leq \text{d in n vars}}$
+$h(d,m)=\Theta(\frac{d^{m}}{m!})=\Theta(\frac{m^{d}}{d!})$, Polynomial growth rate:
+$h(d)=\Theta(d^{m})=\mathcal{O}(d^{m})=\mathcal{O}(m^{d}), h(m)=\Theta(m^{d})...$
+$\Theta$: upper and lower bound, $\mathcal{O}$: only upper bound
+
+%
+\subsection{Designing new kernels}
+The following are all valid kernels:
+\begin{enumerate}
+  \item
+  For any map $\func{\nu}{\mathcal{X} \subseteq \R^{d}}{\R^{q}}$ and feature map $\func{\phi}{\R^{q}}{\R^{p}}$
+  $
+    k(\bm{x},\bm{y}) = \dotp{\phi(\nu(\bm{x})), \phi(\nu(\bm{y}))}
+  $
+  \item
+  Let $k_{1},k_{2}$ be valid kernel functions on $\mathcal{X}$
+  $
+    k(\bm{x}, \bm{x}') &= k_{1}(\bm{x},\bm{x}')k_{2}(\bm{x},\bm{x}') \\
+    k(\bm{x},\bm{x}') &= k_{1}(\bm{x},\bm{x}') + k_{2}(\bm{x},\bm{x}') \\
+    k(\bm{x},\bm{x}') &= c\cdot k_{1}(\bm{x},\bm{x}') \text{ for $c > 0$} \\
+    k(\bm{x},\bm{x}') &= f(k_{1}(\bm{x},\bm{x}'))$
+  where $f$ a poly with positive coeff. or the $\exp$ function.
+\end{enumerate}
+
+%
+\subsection{Set kernel}
+$A, B \subseteq \Omega$ with finite $\Omega$, $k(A, B) = \abs{A \cap B}$ is a valid kernel. Where |A| is the length of set A.
+$\phi : A \subseteq \Omega \mapsto \cset{0,1}^{n}$ with vector for every subset $[a_{1}, \dots, a_{n}], a_{i} = 1$ for $i \in A$.
+
+%
+\subsection{Geometric progression}
+For $a \neq 1, \abs{r} < 1$
+%\begin{tightcenter}
+\begin{tabular}{c c}
+  $\sum_{i=0}^{n-1}a^{i} = \frac{1 - a^{n}}{1 - a}$ & $\sum_{i=m}^{\infty}r^{i}= \frac{r^{m}}{1 - r}$
+\end{tabular}
+%\end{tightcenter}
+
+\subsection{Kernelize loss \& predict}
+$\bm{w} = \sum_{i=1}^{n}\alpha_{i}\phi(\bm{x}_{i}) =>
+\bm{w}^{\top}\phi(\bm{x}_{j})=\sum_{i=1}^{n}\alpha_{i}\phi(x_{i})^{\top}\phi(\bm{x}_{j})=
+\sum_{i=1}^{n}\alpha_{i}k(\bm{x}_{i},\bm{x}_{j})$, where $\phi(\bm{x}_{j}) \in \R^{d}$
+and $\bm{w}^{\top}\bm{w} = \alpha^{\top}\bm{K}\alpha$.
+Prediction for $\bm{x}^{*}: \bm{w}^{\top}\phi(\bm{x}^{*}) = \sum_{i=1}^{n}\alpha_{i}k(\bm{x}_{i},\bm{x}^{*})$
+
+

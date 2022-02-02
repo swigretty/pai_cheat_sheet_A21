@@ -1,0 +1,28 @@
+\section{Active Learning}
+\subsection{Mutual Information}
+$I(X;Y)=H(X)-H(X|Y)=I(Y;X)$\\
+$H(X|Y) = \E[y \sim p(y)]{H(X|Y=y)} = \E{\E{-\log p(X|Y)|Y=y}} =$
+$\int_{\mathcal{Y}}\int_{\mathcal{X}} -\log p(x|y) p(x|y) p(y) dx dy=$
+$\E[x,y \sim p(x,y)]{-\log \frac{p(x,y)}{p(y)}} =$
+$\int_{\mathcal{Y}}\int_{\mathcal{X}} - \log p(x,y) p(x,y) dx dy$
+$+ \underbrace{\int_{\mathcal{Y}}\int_{\mathcal{X}} \log p(y) p(x,y) dx dy}_{\int_{\mathcal{Y}} \log p(y) p(y)}
+= H(X,Y) - H(Y)$
+$ H(X|Y) = H(X) \leftrightarrow X \perp Y \leftrightarrow I(X;Y) = 0$,
+$H(X|Y)=0 \rightleftarrow X is completely determined by Y \leftrightarrow  I(X;Y) = H(X) = H(Y)$\\
+\textbf{EX:} $\X \sim \mathcal{N}(\mu, \Sigma),\ Y=X+\epsilon,
+\epsilon \sim \mathcal{N}(0, \sigma_{n}^{2}I)$,
+$I(X;Y)=H(Y)-H(Y|X) = H(Y)-H(\epsilon) = \frac{1}{2} \log \abs{I+ \sigma_{n}^{-2}\Sigma}$
+
+\textbf{Information gain:}
+$F(S) := H(f)-H(f|y_{S}) = I(f;y_{S})$, $f: D \rightarrow R$, $S \subset D$\\
+\textbf{EX:} $y_{S} = f(x_{S}) + \epsilon,\ \epsilon \sim \mathcal{N}(0, \sigma_{n}^{2}I)$, $f \sim GP(\mu, K)$
+$p(y_{s}|x_{S}, f) = \mathcal{N}(f(x_{S}), \sigma_{n}^{2} I_{d})
+\rightarrow H(y_{s}|f)= \frac{1}{2}\log \bb{(2\pi e)^{d} \abs{\sigma_{n}^{2}I}}$,
+$p(y_{s}|x_{S}) = \mathcal{N}(\mu(x_{S}), \sigma_{n}^{2} I_{d} + K_{S})
+\rightarrow H(y_{S})= \frac{1}{2}\log \bb{(2\pi e)^{d} \abs{\sigma_{n}^{2}I + K_{S}}}$,
+$I(f;y_{S}) = \frac{1}{2} \log \abs{I+ \sigma_{n}^{-2} K_{S}}$
+
+
+
+
+

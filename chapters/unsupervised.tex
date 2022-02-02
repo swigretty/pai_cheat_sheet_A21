@@ -1,0 +1,71 @@
+\section{Unsupervised}
+\subsection{K-Means}
+
+$\hat{R}(\mu):= \sum_{i}^{n}\min_{j \in \{1,..k\}}\norm{x_{i}-\mu_{j}}_{2}^{2}, \mu_{j} \in R^{d} \text{ the cluster centers}$
+\begin{itemize}
+  \item non-convex, NP-hard, kernelizable
+  \item will always decrese with more clusters (also for test set)
+\end{itemize}
+
+\subsubsection{Lloyd's heuristic}
+\begin{itemize}
+  \item init $\mu^{(0)} = [\mu_{1}^{(0)},... \mu_{k}^{(0)}]$
+  \item while not converged:
+    \begin{itemize}
+    \item $z_{i} \leftarrow \argmin_{j \in \{1,..k\}} \norm{x_{i}-\mu_{j}^{t-1}}_{2}$
+    \item $\mu_{j}^{(t)} \leftarrow \frac{1}{n_{j}} \sum_{i:z_{i} =j}x_{i}$
+  \end{itemize}
+  \item guaranteed to monoton. decrease, convergence to local optimum but not global (except for k =1 or n)
+  \item No guarantees for convergence rate
+  \item will always decrese with more clusters (also for test set)
+  \item Cost per iteration: $\mathcal{O}(n \cdot k \cdot d)$, $n = \text{\#data points},\ k = \text{\#clusters}, \ d = \text{dim of space}$.
+  \item like Hard-EM for GMM (uniform weights, $\Sigma = \sigma^{2} \bm{I}$)
+\end{itemize}
+
+%%
+For initialization use k-means++:
+\begin{itemize}
+  \item sequential determination of controids (every centroid depends on already chosen one)
+  \begin{itemize}
+    \item $\mu_{1}^{(0)}:= x_{i},\ i \sim Unif(\{1..n\})$
+    \item $\mu_{j}^{(0)}:= x_{i},\ i \sim Prob(\{1..n\}) \propto \min_{l \in \{1,..j-1\}}\norm{x_{i}- \mu_{l}^{(0)}}_{2}$
+  \end{itemize}
+  \item $\widehat{R}(\bm{\mu}_{\text{k-means++}}^{(0)}) \leq \mathcal{O}(\log k)\min_{\bm{\mu}}\widehat{R}(\bm{\mu}).$
+\end{itemize}
+
+
+\subsection{PCA}
+
+Given centered data $D = \cset{\bm{x}_{1}, \dots, \bm{x}_{n}} \subseteq \R^{d}$ with $\bm{\mu} = \frac{1}{n}\sum_{i}\bm{x}_{i} = 0$ and
+$\bm{\Sigma} = \frac{1}{n} \sum_{i=1}^{n}\bm{x}_{i}\bm{x}_{i}^{\top}$ ($\bm{\Sigma}$ is the empirical covariance matrix),
+the solution to the \emph{PCA} problem
+  $
+    (\bm{W}, \bm{z}_{1}, \dots, \bm{z}_{n}) = \argmin_{\bm{W}^{\top}\bm{W} = \bm{I}_{k}} \sum_{i=1}^{n}\norm{\bm{Wz}_{i} - \bm{x}_{i}}_{2}^{2},
+  $
+  where $1 \leq k \leq d, \bm{W} \in \R^{d \times k}$ is orthogonal (this implies $\norm{\bm{v}_{i}} = 1$, but in general
+$\bm{W}\bm{W}^{\top} \neq \bm{I}_{d}$), $\bm{z}_{1}, \dots, \bm{z}_{n} \in \R^{k}$ is given by
+  $
+    \bm{W} = [\bm{v}_{1} \; | \; \dots \; | \; \bm{v}_{k}] \quad\text{and}\quad \bm{z}_{i} = \bm{W}^{\top}\bm{x}_{i}.
+  $
+  Hereby: $\bm{\Sigma} = \sum_{i=1}^{d}\lambda_{i}\bm{v}_{i}\bm{v}_{i}^{\top}$ and $\lambda_{1} \geq \lambda_{2} \geq \dots \geq \lambda_{d}$, i.e. $\bm{v}_{i}$ is the
+$i$-th eigenvector of $\bm{\Sigma}$ associated with $\lambda_{i}$ in terms of magnitude.\\
+$\bm{X}=\bm{U}\bm{D}\bm{V}^{\top},\ \bm{\Sigma} = \bm{V}\bm{D}^{2}\bm{V}^{\top}$
+
+%
+\subsection{Kernel-PCA}
+For general $k \geq 1$, the kernel principal components are given by
+  $
+    \bm{\alpha}^{(1)}, \dots, \bm{\alpha}^{(k)} \in \R^{n}, \text{ where } \bm{\alpha}^{(i)} = \frac{1}{\sqrt{\lambda_{i}}\bm{v}_{i}}
+  $
+  is obtained from $\bm{K'} = \sum_{i=1}^{n}\lambda_{i}\bm{v}_{i}\bm{v}_{i}^{\top}$ and $\lambda_{1} \geq \lambda_{2} \geq \dots \geq \lambda_{n}$. \\
+  A new point $\bm{\overline{x}}$ is projected as $\bm{z} \in \R^{k}$, where
+  $
+    z_{i} = \sum_{j=1}^{n}\alpha_{j}^{(i)}k'(\bm{x}_{j}, \bm{\overline{x}}).
+  $
+  We must ensure a centered kernel $\bm{K'}$:
+  $
+    \bm{K'} = \bm{K} - \bm{KE} - \bm{EK} + \bm{EKE},
+  $
+  where $(\bm{E})_{i,j} = \frac{1}{n}$ and $\bm{K}$ the original kernel matrix.
+PCA = global optimum of autoencoder with linear activation and squared loss. (Autoencoder non-convex optim, depends on init)
+

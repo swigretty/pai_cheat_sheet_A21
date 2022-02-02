@@ -1,0 +1,80 @@
+\section{Approximate Inference}
+
+\subsection{Laplace Approximation}
+$p(\theta|y) \approx q(\theta) = \mathcal{N}(\theta; \hat{\theta}, \Lambda^{-1})$, 
+$\hat{\theta}=\hat{\theta}_{MAP}$, 
+$\Lambda = -\nabla\nabla \log p(\theta|y)|_{\theta=\hat{\theta}} = \text{Hess}_{\log p(\theta|y)}$
+From Taylor approx: $\log p(\theta|y) = \log p(\hat{\theta}|y) +
+\underbrace{\nabla_{\theta} \log p(\theta|y)|_{\theta=\hat{\theta}}}_{=0}(\theta - \hat{\theta}) +
+\frac{1}{2} (-\Lambda) (\theta - \hat{\theta})^{2}$, 
+$\rightarrow p(\theta|y) \approx p(\hat{\theta}|y) \exp(- \Lambda \frac{1}{2} (\theta - \hat{\theta})^{2}])$,
+$\text{Hess}_{BLR} = \frac{1}{\sigma_{n}^{2}}\bm{X}^{\top}\bm{X} = \text{Hess}_{Lasso}|_{w=\hat{w}}$,
+$\text{Hess}_{Ridge} = \bm{X}^{\top}\bm{X} + \lambda\bm{I}$,
+$\text{Hess}_{Logist} = \bm{X}^{\top}diag([\pi_{i}(1-\pi{i})]_{i})\bm{X} +
+\underbrace{\sigma_{p}^{-2}}_{\text{if gaussion prior}}$
+
+\subsection{Variational Inference}
+$q=\argmin_{q \in Q}KL(q||p(\cdot|y))=\underset{q\in Q}\argmax \color{violet}\E[\theta \sim q]{\log p(y|\theta)} - KL(q||p(\cdot)) \\$
+$\color{violet} \E[\theta \sim q]{\log p(y,\theta)} + H(q) \color{myblue} \leq \log p(y)$ \color{violet}(ELBO)\\
+\color{black}
+\subsubsection{Reparametrization:}
+$\theta_{i}=w_{i}= g(\epsilon, \lambda)$, g needs to be invertible and w must be continous RV.\\
+$\color{violet} \overset{\theta= g(\epsilon, \lambda)}{=} \E[\epsilon]{M(g(\epsilon, \lambda))} \approx \frac{n}{m} \sum_{j=1}^{m}M(g(\epsilon, \lambda))$
+
+\begin{itemize}
+    \item
+    Gaussian: $Q=\{\mathcal{N}(w; \mu, \Sigma): \mu \in R^{d}, \Sigma > 0\},\ \Sigma=CC^{\top}$:
+    $w=\mu +C \epsilon,\ \epsilon \sim \mathcal{N}(0,1)$
+    \item
+    Laplace: $Q=\{ \prod_{i=1}^{d} \frac{1}{2b_{i}} \exp(- \frac{\abs{w_{i}- \mu_{i}}}{b_{i}}): \mu_{i} \in R, b_{i}>0\}$:
+    $w_{i}= \mu_{i}-b_{i}\log(1-2\abs{\epsilon})sgn(\epsilon),\ \epsilon \sim Unif(-\frac{1}{2}, \frac{1}{2})$
+    \item
+    Uniform: $Q=\{\prod_{i=1}^{d} 1\{w_{i} \in \left[ a,b \right] \}\frac{1}{b-a},\ (b-a)>0:\}$:
+    $w_{i}= a+(b-a)\epsilon,\ \epsilon \sim Unif(\left[ 0,1 \right] )$
+\end{itemize}
+
+\subsubsection{Entropy:}
+$H[p] = \E[x \sim p]{-\log p(x)}$
+\begin{itemize}
+    \item $X \sim \mathcal{N}(\mu, \Sigma)$: $H(p)=\frac{1}{2} \log ((2\pi e)^{d} \abs{\Sigma})$
+    \item $X \sim \prod_{i=1}^{d} \text{Laplace}(\mu, b)$: $H(p)=d \log (2be)$
+    \item $X \sim \prod_{i=1}^{d} \text{Unif}(a, b)$: $H(p)=d(b-a)$
+    \item $X \sim \prod_{i=1}^{d} \text{Bernoulli}(a) = \text{Binom}(d, a)$: $H(p)=\frac{1}{2} \log (2\pi ed a (1-a)) $
+\end{itemize}
+
+\subsubsection{KL-Divergence:}
+$KL(q||p) = \int q(\theta) \log \frac{q(\theta)}{p(\theta)}d\theta = \E[\theta \sim q]{\log \frac{q(\theta)}{p(\theta)}}$,
+$KL \geq 0,\ KL(q||p) \neq KL(p||q),\ KL(q||p) = 0 \leftrightarrow p=q$,
+Backward KL $KL(q||p)$ underestimates uncertainty.\\
+
+\textbf{The normal dist. g has max. H} among all distr. f supported on R with same mean and var
+$KL(f||g) = H(g)-H(f)$\\
+
+\textbf{Suppose $q = \mathcal{N}(\mu_{q}, \Sigma_{q})$} and hence
+$\E[\theta \sim q]{\log q(\theta)} = -H(q)$, $\theta = \mu_{q} + \Sigma_{q}^{\frac{1}{2}}\epsilon$:
+\begin{itemize}
+    \item $\nabla_{\lambda} KL = \E[\epsilon \sim \mathcal{N}(0,I)]{\nabla_{\lambda} (\log q(\theta| \lambda) - \log p(\theta))}$
+    \begin{itemize}
+        \item $\frac{\partial}{\partial \mu_{q}} \log q(\theta|\lambda) =0$
+        \item $\frac{\partial}{\partial \sigma_{q_{i}}} \log q(\theta|\lambda) \overset{\Sigma_{q}=diag}{=} -\frac{1}{\sigma_{q_{i}}} $
+    \end{itemize}
+    \item $p=\mathcal{N}(\mu_{p}, \Sigma_{p}),\ p,q \in R^{d}$:
+    \begin{itemize}
+        \item $KL(q||p) = \frac{1}{2}(\log \frac{\abs{\Sigma_{p}}}{\abs{\Sigma_{q}}} -d +
+        (\mu_{q}-\mu_{p})^{\top}\Sigma_{p}^{-1}(\mu_{q}-\mu_{p})) + tr(\Sigma_{p}^{-1} \Sigma_{q})$
+        \item $\nabla_{\mu_{q}}KL \overset{p(\theta) \sim \mathcal{N}(0, \sigma_{p}^{2}I)}{=} \frac{\mu_{q}}{\sigma_{p}^{2}},\
+        \nabla_{\sigma_{q_{i}}}KL \overset{p(\theta) \sim \mathcal{N}(0, \sigma_{p}^{2}I)}{=} \frac{\sigma_{q_{i}}}{\sigma_{p}^{2}}-
+        \frac{1}{\sigma_{q_{i}}}$
+    \end{itemize}
+    \item
+    $p(\theta) = \prod_{i=1}^{d} \text{Laplace}(0, b),\ \E[q]{\log p(\theta)} = \sum_{i=1}^{d}-\log(2b)
+    - \frac{1}{b} \sum_{i=1}^{d}\E[q]{\abs{\theta_{i}}}$, $\E[q]{\abs{\theta_{i}}} = \E[f]{\theta_{i}}$,
+    f: folded normal
+    \begin{itemize}
+        \item $\nabla_{\mu_{q_{i}}}KL \overset{\ref{random vars}}{=} \frac{1}{b}(P(\mu_{q_{i}}+\sigma_{q_{i}}\epsilon_{i} >0)-
+        P(\mu_{q_{i}}+\sigma_{q_{i}}\epsilon_{i} < 0)) =
+        \frac{1}{b}\bb{1-2\Phi(-\frac{\mu_{q_{i}}}{\sigma_{q_{i}}})}$
+    \end{itemize}
+\end{itemize}
+
+

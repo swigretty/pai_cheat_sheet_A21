@@ -1,0 +1,96 @@
+\section{Gradient descent}
+\subsection{Convex function}
+
+$\func{f}{\R^{n}}{\R}$ convex iff $\Forall{t} 0 \leq t \leq 1,\; \Forall{\bm{x}, \bm{y} \in \R^{n}}$
+  $f(t\bm{x} + (1-t)\bm{y}) \leq tf(\bm{x}) + (1-t)f(\bm{y}).$
+
+\begin{itemize}
+\item
+A differentiable function $f$ is convex iff the first order taylor approx. at any $\bm{x}$ is less or equal to the true
+value at $\bm{y}$, i.e.
+$\Forall*{\bm{x},\bm{y} \in \R^{n}} f(\bm{x}) + \nabla f(\bm{x})^{\top}(\bm{y}-\bm{x}) \leq f(\bm{y}).$
+Same for non-diff. functions but $\Exists \bm{g} \text{ (a subgradient at x)} \in \R^{n}$,
+where the above holds with $\nabla f(\bm{x}) = g$
+\item
+A twice differentiable function $f$ is convex iff it has a non-negative curvature at every $\bm{x}$, i.e.
+$
+  \Forall*{\bm{x} \in \R^{n}} \text{Hess}_{f}(\bm{x}) \geq 0.
+$
+If $\text{Hess}_{f}(\bm{x}) \geq \alpha \bm{I}$ there is a unique minimizer. ($\alpha$ strong convexity)
+\item
+For convex functions $f,g$, it holds that $\Forall*{\alpha,\beta \geq 0} \alpha f + \beta g$ is convex.
+\item
+If $f$ convex and $g$ affine, then $f \circ g$ is convex.
+\item
+If $f$ non-decreasing and $g$ convex, then $f \circ g$ is convex.
+\item
+For convex functions $f,g$, we have that
+$
+  h(\bm{x}) \triangleq \max\cset{f(\bm{x}), g(\bm{x})}
+$
+is convex.
+\end{itemize}
+%
+\subsection{Subgradient and minima}
+Let $f$ be a convex function. If $\bm{x}^{\star}$ is a min of $f$, then $0 \in \partial f(\bm{x}^{\star})$,
+where $\partial f(\bm{x})$ denotes the set of subgradients of $f$ at point $\bm{x}, g$.
+E.g. $f(\bm{x}) = \max\cset{0, \abs{\gm{x}}}$;
+if $\abs{\gm{x}}<0$,$\partial f(\bm{x})$=$\cset{0}$;
+if $\abs{\gm{x}}>0$,$\partial f(\bm{x})$=$\cset{1}$;
+if $\abs{\gm{x}}=0$,$\partial f(\bm{x})$=$\cset{a*1 : 0 \leq a \leq 1}$
+
+%
+\subsection{Operator norm} \label{operator norm}
+For a square matrix $\bm{A}$, it holds
+  $\norm{\bm{A}}_{\text{op}} = \max\cset{\abs{\lambda_{\max}(\bm{A})}, \abs{\lambda_{\min}(\bm{A})}}.$
+
+\subsection{GD convergence}
+\begin{itemize}
+\item
+We have $\norm{\bm{w}^{t} - \bm{w}^{\star}}_{2} \leq \underbrace{\norm{\bm{I} - \eta
+\bm{X}^{\top}\bm{X}}_{\text{op}}^{t}}_{\triangleq \rho}\underbrace{\norm{\bm{w}^{0} - \bm{w}^{\star}}_{2}}_{\triangleq c}$. \\
+If $\rho < 1 \Longleftrightarrow \lambda_{\min}(\bm{X}^{\top}\bm{X}) > 0$,
+then the error converges to zero, i.e. $\lim\limits_{t \rightarrow \infty}\norm{\bm{w}^{t} - \bm{w}^{\star}}_{2} = 0$.
+Hence at each iteration there exists $\eta_{t} >0$ such that $\Delta L \leq 0$. This only hold in expectation for SGD
+\item
+Let $\mathcal{T}$ be the number of iterations needed to get $\epsilon$-close to $\bm{w}^{\star}$.
+    For $\rho^{\mathcal{T}}c \leq \epsilon$ we need $\mathcal{T} \geq \frac{\log\bb{\frac{c}{\epsilon}}}
+    {\log\bb{\frac{1}{\rho}}}$. Therefore, the smaller $\rho$, the fewer steps needed.
+    Given a fixed stepsize $\eta$, if $\lambda_{\min}(\bm{X}^{\top}\bm{X}) > 0$ is small
+    $\Longleftrightarrow \norm{\bm{y} - \bm{Xw}}^{2}$ has small curvature in some direction and $\rho$ is close to
+    $1$, then we encounter slow convergence.
+\item
+For a good $\eta$, we require $\rho \overset{\ref{operator norm}}{=}\max\cset{1 - \eta \lambda_{\min},
+    \eta\lambda_{\max}-1} < 1$. Therefore, we require $\eta \leq \frac{2}{\lambda_{\max}}
+    \text{ and } \lambda_{\min} > 0$.
+\item
+It follows that GD does not converge if $\eta > \frac{2}{\lambda_{\max}}$!
+\item
+The fastest rate with constant $\eta$ is achieved with $\rho = 1 - \frac{1}{\kappa}$ with
+$\eta = \frac{2}{\lambda_{\min} + \lambda_{\max}}$ and condition number $\kappa = \frac{\lambda_{\max}}{\lambda_{\min}}$.
+\item
+Rate of convergence with optimal stepsize: Using $\log\bb{1-\frac{1}{\kappa}}\leq -\frac{1}{\kappa}$,
+$\bm{w}^{\mathcal{T}}$ is $\epsilon$-close to $\bm{w}^{\star}$ after
+$\mathcal{T} \geq \mathcal{O}\bb{\kappa\log\bb{\frac{1}{\epsilon}}}$.
+That means, if $\kappa$ large, convergence is slow.
+\item One GD step $= \mathcal{O}(nd)$ Getting $\epsilon$ close = $\mathcal{O}\bb{nd\kappa\log\bb{\frac{1}{\epsilon}}}$
+\item
+$\kappa >> 1$ choose $\eta = \frac{1}{\lambda_{\max}}$
+\item $\text{Hess}_{OLS} = \bm{X}^{\top}\bm{X}$, $\text{Hess}_{Ridge} = \bm{X}^{\top}\bm{X} + \lambda\bm{I}$,
+$\text{Hess}_{Logist} = \bm{X}^{\top}diag([\pi_{i}(1-\pi{i})]_{i})\bm{X}$. All $\geq 0 \Forall {w}$.
+Lasso not diffable at w=0 but all losses are convex. Ridge strongly convex.
+\item Logistic: $\nabla_{w}L_{i} = -y_{i}x_{i}\hat{P}(Y=-y_{i}| w, x_{i}) =
+-y_{i}x_{i} \frac{1}{1+\exp(y_{i}w^{\top} x_{i})} \overset{y \in \{0,1\}}{=} x_{i}^{\top}(\pi_{i}-y_{i})$
+\item sensitive to in itial cond.
+\item can take exp. time to escape saddle point
+\item treats all directions uniformly, unlike Newton's Method: $-\text{Hess}^{-1} \nabla_{w}L(w^{t})$
+\item Momentum: $w^{t+1} = w^{t} + \gamma\Delta w^{t-1} - \eta \nabla_{w}L(w^{t})$
+\end{itemize}
+
+\subsection{SGD}
+Assuming bounded losses, SGD converges if lr $\eta_{t}$ satisfies $\sum_{t=1}^{\infty}\eta_{t} = \infty$
+    and $\sum_{t=1}^{\infty}\eta_{t}^{2} < \infty$
+e.g $\eta_{t}:\frac{1}{t^{k}},\ k \in (0,1],\max\cset{0.1,\frac{1}{t}}$ not valid: $\log(t)$
+
+
+
