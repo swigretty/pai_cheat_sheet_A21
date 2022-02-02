@@ -28,12 +28,14 @@ $x_{t+1} = \argmax_{x}F(S_{t} \cup \{x\}) = \argmax_{x}F(S_{t} \cup \{x\}) -F(S_
 \argmax_{x}I(f; y_{x}|y_{S_{t}})
 \overset{\color{orange} COV(\epsilon)=\sigma_{n}^{2}}{=}
 \argmax_{x}\frac{1}{2} \log (1 + \frac{\color{blue}\sigma_{f}(x|S_{t})^{2}}{\color{green}{\sigma_{n}^{2}}})=
-\color{myblue}\argmax_{x}\sigma_{f}(x|S_{t})^{2}$ = uniform sampling = uncertainty sampl. (\color{blue} epistemic,
-\color{green} aleatoric) \color{black}
+\color{myblue}\argmax_{x}\sigma_{t}(x)^{2}$ = uniform sampling = uncertainty sampl. (\color{blue} epistemic,
+\color{green} aleatoric) \color{black}, $\sigma_{t}^2(x)=Var(f(x)|y_{1:t})$ (Posterior)
+However in the heterosced. case fails to distinguish aleatoric and epistemic unc. and
+most unc. outcomes are not necessarily most informative.
+
 F(S) is monotone submodular \textrightarrow uncertainty sampling provides constant factor approx.
 $\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) = F(X|B)$,
 Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
-However in the heterosced. case most uncertain outcomes are not necessarily most informative.
 
 \subsection{Classification}
 uncertainty sampl is max. entropy of prdicted label: $x_{t+1} \in \argmax_{x}H(Y|x,x_{1:t}, y_{1:t})
@@ -44,7 +46,12 @@ $\underbrace{\E[\theta \sim p(\cdot|x_{1:t}, y_{1:t})]{H(y|x, \theta)}}_{II}$
 $I$: entropy of avg. (approx by predictive distr. of approx. posterior)
 $II$: average of entropy $\approx \frac{1}{m} \sum_{i=1}^{m}H(x, \theta^{(i)}),\ \theta^{(i)}\sim q(\cdot|y_{1:t})$
 
-
+\section{Baysian Optimization}
+How should we sequentially pick $x_{1},..x_{T}$ to find $\max_{x}f(x)$ with minimal samples.
+$f \sim GP(0,k)$, Posterior: $\E{f(x)|y_{1:t}}=\mu_{t}(x), Var(f(x)|y_{1:t})=\sigma_{t}^2(x)$
+\subsection{Aquisition functions}
+\begin{itemize}
+\end{itemize}
 
 
 
