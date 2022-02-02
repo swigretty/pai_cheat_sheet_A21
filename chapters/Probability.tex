@@ -117,8 +117,11 @@ $\varphi(\operatorname{E}[X]) \leq  \operatorname{E}[\varphi(X)]$
 \subsection{Law of Large Number}
 $\E[\theta \sim p(\theta|y_{1:n})]{p(y^{*}|x^{*}, \theta)} =
 \lim\limits_{N \to \infty} \frac{1}{N} \sum_{i=1}^{N}p(y^{*}|x^{*}, \theta_{i})$, $\theta_{i}$ iid from $p(\theta|y_{1:n})$\\
+
 \subsection{Hoeffding's iequality}
-f bounded in $\left[0,C\right]$:
-$P\bb{\abs{\E[p]{f(x)}-\frac{1}{N}\sum_{i=1}^{N}f(x_{i})} > \epsilon} \leq
-\underbrace{2\exp{(-\frac{2N\epsilon^{2}}{C^2}})}_{\delta}$ \\
+f bounded in $\left[0,C\right]$:\\
+$P\bb{\abs{\E[p]{f(x)}-\frac{1}{N}\sum_{i=1}^{N}f(x_{i})} > \epsilon} \leq 2\exp(-\frac{2N\epsilon^{2}}{C^2})$
 $N \geq \frac{C^2}{2\epsilon^2}\ln{\frac{2}{\delta}} \rightarrow$ error $\leq \epsilon$ with prob $1 - \delta$
+
+
+
