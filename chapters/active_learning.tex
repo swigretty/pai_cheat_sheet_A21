@@ -1,5 +1,6 @@
 \section{Active Learning}
 collect data that max. reduces uncertainty about unknown model.
+
 \subsection{Mutual Information}
 $I(X;Y)=H(X)-H(X|Y)=I(Y;X)$\\
 $H(X|Y) = \E[y \sim p(y)]{H(X|Y=y)} = \E{\E{-\log p(X|Y)|Y=y}} =$
@@ -22,24 +23,28 @@ $p(y_{s}|f) = \mathcal{N}(f(x_{S}), \sigma_{n}^{2} I_{d})
 $p(y_{s}) = \mathcal{N}(\mu(x_{S}), \sigma_{n}^{2} I_{d} + K_{S})
 \rightarrow H(y_{S}) = H(f_{S} + \epsilon) =\frac{1}{2}\log \bb{(2\pi e)^{d} \abs{\sigma_{n}^{2}I + K_{S}}}$,
 $I(f;y_{S}) = \frac{1}{2} \log \abs{I+ \sigma_{n}^{-2} K_{S}}$\\
+increases monotonically with increasing $\abs{S}$
 
-Maximising F(S) is NP-hard \textrightarrow Greedy max mutual Inf:
+\subsection{Uncertainty sampling}
+Maximising $F(S)$ is NP-hard \textrightarrow Greedy maxim:
 $x_{t+1} = \argmax_{x}F(S_{t} \cup \{x\}) = \argmax_{x}F(S_{t} \cup \{x\}) -F(S_{t}) =
 \argmax_{x}I(f; y_{x}|y_{S_{t}})
 \overset{\color{orange} COV(\epsilon)=\sigma_{n}^{2}}{=}
 \argmax_{x}\frac{1}{2} \log (1 + \frac{\color{blue}\sigma_{f}(x|S_{t})^{2}}{\color{green}{\sigma_{n}^{2}}})=
 \color{myblue}\argmax_{x}\sigma_{t}(x)^{2}$ = uniform sampling = uncertainty sampl. (\color{blue} epistemic,
 \color{green} aleatoric) \color{black}, $\sigma_{t}^2(x)=Var(f(x)|y_{1:t})$ (Posterior)
-However in the heterosced. case fails to distinguish aleatoric and epistemic unc. and
-most unc. outcomes are not necessarily most informative.
+\begin{itemize}
+    \item in the heterosced. case fails to distinguish aleatoric and epistemic unc.
+    \item most unc. outcomes are not necessarily most informative.
+    \item F(S) is monotone submodular \textrightarrow uncertainty sampling provides constant factor approx.
+    $\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) = F(X|B)$, Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
+\end{itemize}
 
-F(S) is monotone submodular \textrightarrow uncertainty sampling provides constant factor approx.
-$\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) = F(X|B)$,
-Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
 
 \subsection{Classification}
 uncertainty sampl is max. entropy of prdicted label: $x_{t+1} \in \argmax_{x}H(Y|x,x_{1:t}, y_{1:t})
-= - \sum_{y} \log p(y|x, x_{1:t}, y_{1:t})$
+= - \sum_{y} \log p(y|x, x
+\item _{1:t}, y_{1:t})$
 BALD max. mutual information: $x_{t+1} \in \argmax_{x}I(\theta; y_{x}|x_{1:t}, y_{1:t})
 = - \sum_{y} \log p(y|x, x_{1:t}, y_{1:t}) = \underbrace{H(y|x, x_{1:t}, y_{1:t})}_{I} - $
 $\underbrace{\E[\theta \sim p(\cdot|x_{1:t}, y_{1:t})]{H(y|x, \theta)}}_{II}$
@@ -48,11 +53,29 @@ $II$: average of entropy $\approx \frac{1}{m} \sum_{i=1}^{m}H(x, \theta^{(i)}),\
 
 \section{Baysian Optimization}
 How should we sequentially pick $x_{1},..x_{T}$ to find $\max_{x}f(x)$ with minimal samples.
-$f \sim GP(0,k)$, Posterior: $\E{f(x)|y_{1:t}}=\mu_{t}(x), Var(f(x)|y_{1:t})=\sigma_{t}^2(x)$
+$f \sim GP(0,k)$, Posterior: $\E{f(x)|y_{1:t}}=\mu_{t}(x), Var(f(x)|y_{1:t})=\sigma_{t}^{2}(x)$,
+$\delta_{t}(x) = \mu_{t}(x)-f^{*}\ f^{*}:=max_{i=1:t}y_{i}$ contant at any time t.
 \subsection{Aquisition functions}
 \begin{itemize}
+    \item $PI = \Phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
+    for $\delta_{t}(x) >0$, $PI$ decreases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploitation
+    \item $EI = \delta_{t}(x)\Phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)}) +
+    \sigma_{t}^{2}(x) \phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
+    Expectation of improvement $u(f(x)):= \max(0, f(x)-f^{*})$\\
+    nonlinear, $EI$ increases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploration
+    \item $UCB = \mu_{t}(x) + \beta \sigma_{t}^{2}(x) = \delta_{t}(x) + \beta \sigma_{t}^{2}(x) + f^{*}$\\
+    linear in $\delta_{t}$ and $\sigma_{t}^{2}(x)$, larger $\beta$ \textrightarrow more exploration,
+    $\beta \lim \infty$: uncertainty sampling, $UCB$ non convex\\
+    Set of plausible max $={x \in D: UCB_{t-1}(x) \geq \max_{x \in D} LCB_{t-1}(x)}$
 \end{itemize}
 
-
+maximum information gain $\gamma_{T} = \max_{\abs{S} \leq T} I(f;y_{S})$:
+\begin{itemize}
+    \item linear: $\gamma_{T} = \mathcal{O}(d \log T)$
+    \item RBF: $\gamma_{T} = \mathcal{O}((\log T)^{d+1})$
+\end{itemize}
+Guarantees sublinear regret (i.e. convergence) \textrightarrow $\lim_{T \rightarrow \infty} \frac{R_{T}}{T} =0$,
+also vanishing instantaneous regret
+$\frac{R_{T}}{T} = \frac{1}{T}\sum_{t=1}^{T}(f(x^{*}-f(x_{t}))) = \mathcal{O}^{*}(\sqrt {\frac{\gamma_{T}}{T}})$
 
 

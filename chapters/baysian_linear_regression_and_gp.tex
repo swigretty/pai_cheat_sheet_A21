@@ -41,7 +41,7 @@ Wiener Process: $k(t,t') = COV(f(t,t')) = \sigma_{0}^{2}+\sigma_{x}^{2}\min\{t,t
 \subsection{GP}
 $y_{A}=f(x_{A})+\epsilon_{A},\ f\sim GP(\mu, k), A=\{1,..n\}$
 $\begin{bmatrix} f(x) \\ y_{A}\end{bmatrix} = \begin{bmatrix} 1 \\ 1\end{bmatrix} f + \begin{bmatrix} 0 \\ 1 \end{bmatrix}\epsilon_{A}$
-$\sim \mathcal{N}\bb{\begin{bmatrix} \mu \\ \mu\end{bmatrix},
+$\sim \mathcal{N}\bb{\begin{bmatrix} \mu(x) \\ \mu(x_{A})\end{bmatrix},
     \begin{bmatrix} k(x,x') & k_{Ax}^{\top} \\ k_{Ax} & K_{AA}+\sigma_{n}^{2}I_{n}\end{bmatrix}}$
 $f|y_{A} \sim GP(\bar{\mu}, \bar{\Sigma})$,
 $\bar{\mu}(x) = \mu(x) + k_{x,A}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}(y_{A}-\mu(x_{A})$,
