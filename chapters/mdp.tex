@@ -1,15 +1,71 @@
-%! Author = gianna
-%! Date = 03.02.22
+\section{Probabilistic Planning}
+\subsection{Markov Decision Processes}
+An MDP is specified by: states $X=\{1,..n\}$, actions $A=\{1,..m\}$, reward function $r(x,a, x')$, transition prob: $P(x'|x, a)$
+Given policy $\pi: X \rightarrow A$:
 
-% Preamble
-\documentclass[11pt]{article}
+\begin{itemize}
+    \item Expected cumulative rewards: $J(\pi) = \E{\sum_{t=0}^{\infty} \gamma^t r(X_t, \pi(X_t))} =
+\sum_{x}P(X_{0}=x)V^{\pi}(x)$
+    \item Value function: $V^{\pi}(x) & = J(\pi | X_0 = x) = \mathbb{E}[\sum_{t=0}^{\infty} \gamma^t r(X_t, \pi(X_t)) | X_0 = x] \\
+         & = r(x, \pi(x)) + \gamma \sum_{x'} P(x' | x, \pi(x)) V^{\pi}(x')$\\
+    \begin{itemize}
+        \item compute $V^{\pi}$ exactly by solving linear system $=\mathcal{O}(n^3)$
+        \item fixed point iteration: For $t=1:T V^{\pi}_{t} = r^{\pi} + \gamma T^{\pi} V_{t-1}^{\pi}$,
+        will converge to $V^{*}$, since $B^{\pi}V$ is a contraction,
+        i.e $\norm{V^{\pi_{t+1}}(x) - V^{*}}_{\infty} \leq \norm{BV^{\pi_{t}}(x) - V^{*}}_{\infty}$.
+        and $V^{*}$ is a fixed point, i.e. $BV^{*} = V^{*}$.
+        More efficint if $T^{\pi}$ is sparse.
+    \end{itemize}
+\end{itemize}
 
-% Packages
-\usepackage{amsmath}
+\textbf{Bellman:} Policy optimal $\leftrightarrow$ greedy wrt. to its induced value function:\\
+$\pi^*(x)=\underset{a\in A}{argmax} [r(x,a)+\gamma \sum_{x'}P(x'|x,a)V^*(x')] =
+\underset{a\in A}{argmax}Q^*(x,a)$\\
+$V^*(x) = \max_{a}(r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x'))$
+$Q^*(x,a) = r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x') = \E[x']{r(x,a,x') + \gamma \max_{a}(Q^*(x',a))}$
 
-% Document
-\begin{document}
+
+\subsection{Policy iteration (Cost $O(S^3+SA\Delta)$)}
+Start with an arbitrary (e.g. random) policy $\pi$.
+Until converged, do:\\
+- Compute value function $V^\pi (x)$\\
+- Compute greedy policy $\pi_G$ w.r.t. $V^\pi$\\
+- Set $\pi \leftarrow \pi_G$\\
+Guaranteed to monotonically improve and to converge to $\pi^*$ in $O(n^2m/(1-\gamma))$ iterations (converges in polynomial number of iterations)!
+
+\subsection{Value iteration (Cost $O(SA\Delta)$)}
+Initialize $V_0(x)=max_a r(x,a)$\\
+For $t=1$ to $\infty$:\\
+- For each $(x,a)$, let: \\
+$Q_t(x,a)=r(x,a)+\gamma\sum_{x'}P(x'|x,a)V_{t-1}(x')$\\
+- For each $x$, let $V_t(x)=\underset{a}{max}Q_t(x,a)$\\
+- Break if $||V_t-V_{t-1}||_{\infty}=\underset{x}{max}|V_t(x)-V_{t-1}(x)|\leq\epsilon$\\
+Then choose greedy policy w.r.t $V_t$.\\
+Guaranteed to converge to $\epsilon$-optimal policy (finds approximate solution in polynomial number of iterations)!
 
 
 
-\end{document}
+
+\subsection{POMDP = Belief-state MDP}
+States = beliefs over states for original POMDP\\
+$B=\Delta({1,...,n})=\{ b:{1,...,n} \rightarrow [0,1],\sum_x b(x)=1 \}$\\
+Actions: same as original MDP\\
+\textbf{Transition model:}\\
+- Stochastic observation:\\
+$P(Y_t|b_t)=\sum_{x=1}^n P(Y_t|X_t=x)b_t(x)$\\
+- State update (Bayesian filtering!), given $b_t, y_t, a_t$:
+$b_{t+1}(x')=\frac{1}{Z}\sum_xb_t(x)P(y_t|x)P(X_{t+1}=x'|X_t=x,a_t)$\\
+Reward function: $r(b_t, a_t)=\sum_x b_t(x)r(x,a_t)$
+
+\subsection{Example of approx. solution to POMDPs: Policy gradients}
+- Assume parameterized policy: $\pi(b)=\pi(b;\theta)$\\
+- For each parameter $\theta$ the policy induces a Markov chain\\
+- Can compute expected reward $J(\theta)$ by sampling.\\
+- Find optimal parameters through search (gradient ascent):
+$\theta^* = \underset{\theta}{arg max}\quad J(\theta)$
+
+
+\begin{itemize}
+    \item every finite MDP with bounded rewards and $gamma \in \left[ 0,1)$ has at least one optimal policy and
+    unique value function
+\end{itemize}

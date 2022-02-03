@@ -74,8 +74,16 @@ maximum information gain $\gamma_{T} = \max_{\abs{S} \leq T} I(f;y_{S})$:
     \item linear: $\gamma_{T} = \mathcal{O}(d \log T)$
     \item RBF: $\gamma_{T} = \mathcal{O}((\log T)^{d+1})$
 \end{itemize}
-Guarantees sublinear regret (i.e. convergence) \textrightarrow $\lim_{T \rightarrow \infty} \frac{R_{T}}{T} =0$,
-also vanishing instantaneous regret
-$\frac{R_{T}}{T} = \frac{1}{T}\sum_{t=1}^{T}(f(x^{*}-f(x_{t}))) = \mathcal{O}^{*}(\sqrt {\frac{\gamma_{T}}{T}})$
+Guarantees for sublinear regret (i.e. convergence) \textrightarrow $\lim_{T \rightarrow \infty} \frac{R_{T}}{T} =0$,
+also vanishing instantaneous regret.
+\begin{itemize}
+    \item UCB:
+    $f \sim GP$: $\frac{R_{T}} = \sum_{t=1}^{T}(f(x^{*}-f(x_{t}))) = \mathcal{O}^{*}(\sqrt {\gamma_{T}T})$\\
+    $f \in H_{k}$: $R_{T} = \mathcal{O}(\sqrt {\beta_{T}\gamma_{T}T})$,
+    $\beta_{T} = \mathcal{O}(\norm{f}_{k} + log(T)^{3}\gamma_{T})$
+    \item EI: for $f \in H_{k}$ same as UCB
+\end{itemize}
+
+
 
 
