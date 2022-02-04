@@ -30,14 +30,14 @@ Maximising $F(S)$ is NP-hard \textrightarrow Greedy maxim:
 $x_{t+1} = \argmax_{x}F(S_{t} \cup \{x\}) = \argmax_{x}F(S_{t} \cup \{x\}) -F(S_{t}) =
 \argmax_{x}I(f; y_{x}|y_{S_{t}})
 \overset{\color{orange} COV(\epsilon)=\sigma_{n}^{2}}{=}
-\argmax_{x}\frac{1}{2} \log (1 + \frac{\color{blue}\sigma_{f}(x|S_{t})^{2}}{\color{green}{\sigma_{n}^{2}}})=
-\color{myblue}\argmax_{x}\sigma_{t}(x)^{2}$ = uniform sampling = uncertainty sampl. (\color{blue} epistemic,
+\argmax_{x}\frac{1}{2} \log (1 + \frac{\color{blue}\sigma_{t}^2(x)}{\color{green}{\sigma_{n}^{2}}})=
+\color{myblue}\argmax_{x}\sigma_{t}(x)^{2}$ = uncertainty sampl. (\color{blue} epistemic,
 \color{green} aleatoric) \color{black}, $\sigma_{t}^2(x)=Var(f(x)|y_{1:t})$ (Posterior)
 \begin{itemize}
     \item in the heterosced. case fails to distinguish aleatoric and epistemic unc.
     \item most unc. outcomes are not necessarily most informative.
     \item F(S) is monotone submodular \textrightarrow uncertainty sampling provides constant factor approx.
-    $\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) = F(X|B)$, Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
+    $\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) \geq F(X|B)$, Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
 \end{itemize}
 
 
