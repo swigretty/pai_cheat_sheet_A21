@@ -21,7 +21,8 @@ Given policy $\pi: X \rightarrow A$:
 \textbf{Bellman:} Policy optimal $\leftrightarrow$ greedy wrt. to its induced value function:\\
 $\pi^*(x)=\underset{a\in A}{argmax} [r(x,a)+\gamma \sum_{x'}P(x'|x,a)V^*(x')] =
 \underset{a \in A}{argmax}Q^*(x,a)$\\
-$V^*(x) = \max_{a}(r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x')) = \max_{a} \E[x']{r}$
+$V^*(x) = \max_{a}(r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x')) \overset{t=\{0,..T\}}{=}
+\max_{a_{0:T}} \E[X_{1:T}]{\sum_{t=0}^{T} \gamma^t r(X_t, a_t, X_{t+1}) | X_0 = x} $\\
 $Q^*(x,a) = r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x') = \E[x']{r(x,a,x') + \gamma \max_{a}(Q^*(x',a))}$
 
 
@@ -49,12 +50,9 @@ $P(x'|x,a), r(x,a)$ not known. $\tau = \underbrace{x_{0}, a_{0}}_{\text{input}},
 \underbrace{r_{0}, x_{1}}_{\text{label}}...)$. $D=\{\tau^{(1)}, ..., \tau^{(n )}\}$
 Compared to supervised learning: data we get depends on actions \textrightarrow not i.i.d.
 
-\textbf{on-poliy RL}: Agent has full control over actions, can choose how to trade exploration and exploitation.
+\textbf{on-poliy RL}: Agent has full control over actions.
 Ex: TD-learning, $\epsilon$-greedy, SARSA\\
-$Q(x,a) \leftarrow Q(x,a) + \alpha(r+\gammaQ(x', \pi(x'))- Q(x,a))$
-
-\textbf{off-poliy RL}: no control over actions, get observational data. Ex: Q-learning, R_max
-$Q(x,a) \leftarrow Q(x,a) + \alpha(r+\gamma max_{a'}Q(x', a')- Q(x,a))$
+\textbf{off-poliy RL}: get observational data. Ex: Q-learning, R_max
 
 \subsection{model based}
 estimate $P(x'|x,a), r(x,a)$ by calc avg. (exploration, choose best policy based on current estimate)
@@ -88,19 +86,19 @@ poly in $n,m,T,\frac{1}{\epsilon}, log(\frac{1}{\delta}, R_{max})$
 \subsection{model free}
 estimate $V^{\pi(x)}, Q$ directly
 
-\subsection{TD-learing (on policy)}
+\subsubsection{TD-learing (on policy)}
 Follow a given policy $\pi$ and obtain (x,a,r,x'):
 $\hat{V^\pi} \leftarrow (1-\alpha_{t})\hat{V^\pi} + \alpha_t (r + \gamma \hat{V^\pi}(x'))$
 current estimate added to reduce variance.
 Converges to $V^\pi$ with prob 1 if $\alpha_{t}$ satisfies \color{magenta}RM:\color{black}.
-
-\subsection{Q-learing (off-policy)}
+(Sarsa same with Q function)
+\subsubsection{Q-learing (off-policy)}
 $\hat{Q^*} \leftarrow (1-\alpha_{t})\hat{Q^*} + \alpha_t (r + \gamma \max_{a'}(\hat{Q^*}(x',a')))$
 Converges to $Q^*$ with prob 1 if $\alpha_{t}$ satisfies \color{magenta}RM:\color{black} and
 all (x,a) are chosen inf. often.
 Memory: $\mathcal{O}(nm)$, Comp time: per transition $\max_{a'}(\hat{Q^*}(x',a')) = \mathcal{O}(m)$
 However can be on-policy:
-optimistic Q-learning (see R_max for $\epsilon$-optimal policy), $\epsilon$-greedy Q-learning.
+optimistic Q-learning (see R_{max}), $\epsilon$-greedy Q-learning.
 
 
 \subsection{Policy Gradients}
