@@ -22,11 +22,11 @@ $y_{A}=f(x_{A})+\epsilon_{A},\ f\sim GP(\mu, k), A=\{1,..n\}$
 $\begin{bmatrix} f(x) \\ y_{A}\end{bmatrix} = \begin{bmatrix} 1 \\ 1\end{bmatrix} f + \begin{bmatrix} 0 \\ 1 \end{bmatrix}\epsilon_{A}$
 $\sim \mathcal{N}\big( \begin{bmatrix} \mu(x) \\ \mu(x_{A})\end{bmatrix},
     \begin{bmatrix} k(x,x') & k_{Ax}^{\top} \\ k_{Ax} & K_{AA}+\sigma_{n}^{2}I_{n}\end{bmatrix} \big)$
-$f|y_{A} \sim GP(\bar{\mu}, \bar{\Sigma})$,
+$f|y_{A} \sim GP(\bar{\mu}, \bar{k})$,
 $\bar{\mu}(x) = \mu(x) + k_{x,A}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}(y_{A}-\mu(x_{A})$,
 $\bar{k}(x,x')= k(x,x')-k_{xA}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}k_{xA}$\\
 Online update:
-$f_{t} \sim GP(\mu_{t}, k_{t})$, $y_{t}=f(x_{t})+\epsilon_{t}$
+$f_{t} \sim GP(\mu_{t}, k_{t})$, $y_{t}=f(x_{t})+\epsilon_{t}$,
 $\begin{bmatrix} f|y_{1:t}(x') \\ f|y_{1:t}(x'')\\ y_{t+1}\end{bmatrix} =
 \begin{bmatrix} f_{t}(x') \\ f_{t}(x'') \\ f_{t}(x_{t+1}) \end{bmatrix} +
 \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}\epsilon_{t+1}$
