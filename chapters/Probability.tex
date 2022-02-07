@@ -78,17 +78,8 @@ Cov can be neg.
 
 
 \subsection{Review Probability}
-\textbf{Probability space ($\Omega, F, P$):}
-Set of atomic events $\Omega$.
-Set of all non-atomic events ($\sigma$-Algebra): $F \in 2^{\Omega}$.
-Probability measure: $P: F \rightarrow [0,1]$\\
-\textbf{Bayes' rule}: $P(B|A)= P(A,B)/P(A)=P(A|B)P(B)/P(A)$, where $P(A)=\sum_bP(A|B)P(A)$
-\textbf{Union:} $P(A\cup B)=P(A)+P(B)-P(A\cap B)$
 
-% \textbf{Probability axioms:}\\
-% Normalization\\
-% Non-negativity\\
-% $\sigma$-additivity
+\textbf{Union:} $P(A\cup B)=P(A)+P(B)-P(A\cap B)$
 
 \textbf{Rules for joint distributions:}\\
 Sum rule (Marginalization):\\
@@ -106,12 +97,6 @@ Decomposition: $X \perp (Y,W)$ | $Z \Rightarrow X \perp Y$ | $Z$\\
 Contraction: $(X \perp Y$ | $Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$\\
 Weak union: $X \perp Y,W$ | $Z \Rightarrow X \perp Y$ | $Z, W$\\
 Intersection: $(X \perp Y$ | $W, Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$
-
-
-\subsection{Convex / Jensen's inequality}
-$\text{g(x) is convex} \Leftrightarrow x_1,x_2 \in \mathbb{R}, \lambda \in [0,1]: g''(x) > 0$\\
-$g(\lambda x_1 + (1-\lambda) x_2) \leq \lambda g(x_1) + (1-\lambda) g(x_2)$
-$\varphi(\operatorname{E}[X]) \leq  \operatorname{E}[\varphi(X)]$
 
 
 \subsection{Law of Large Number}
