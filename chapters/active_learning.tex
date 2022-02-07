@@ -54,17 +54,17 @@ $II$: average of entropy $\approx \frac{1}{m} \sum_{i=1}^{m}H(x, \theta^{(i)}),\
 \section{Baysian Optimization}
 How should we sequentially pick $x_{1},..x_{T}$ to find $\max_{x}f(x)$ with minimal samples.
 $f \sim GP(0,k)$, Posterior: $\E{f(x)|y_{1:t}}=\mu_{t}(x), Var(f(x)|y_{1:t})=\sigma_{t}^{2}(x)$,
-$\delta_{t}(x) = \mu_{t}(x)-f^{*}\ f^{*}:=max_{i=1:t}y_{i}$ contant at any time t.
+$\Delta_{t}(x) = \mu_{t}(x)-f^{*}\ f^{*}:=max_{i=1:t}y_{i}$ contant at any time t.
 \subsection{Aquisition functions}
 \begin{itemize}
-    \item $PI = \Phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
-    for $\delta_{t}(x) >0$, $PI$ decreases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploitation
-    \item $EI = \delta_{t}(x)\Phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)}) +
-    \sigma_{t}^{2}(x) \phi(\frac{\delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
+    \item $PI = \Phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
+    for $\Delta_{t}(x) >0$, $PI$ decreases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploitation
+    \item $EI = \Delta_{t}(x)\Phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)}) +
+    \sigma_{t}^{2}(x) \phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
     Expectation of improvement $u(f(x)):= \max(0, f(x)-f^{*})$\\
     nonlinear, $EI$ increases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploration
-    \item $UCB = \mu_{t}(x) + \beta \sigma_{t}^{2}(x) = \delta_{t}(x) + \beta \sigma_{t}^{2}(x) + f^{*}$\\
-    linear in $\delta_{t}$ and $\sigma_{t}^{2}(x)$, larger $\beta$ \textrightarrow more exploration,
+    \item $UCB = \mu_{t}(x) + \beta \sigma_{t}^{2}(x) = \Delta_{t}(x) + \beta \sigma_{t}^{2}(x) + f^{*}$\\
+    linear in $\Delta_{t}$ and $\sigma_{t}^{2}(x)$, larger $\beta$ \textrightarrow more exploration,
     $\beta \lim \infty$: uncertainty sampling, $UCB$ non convex\\
     Set of plausible max $={x \in D: UCB_{t-1}(x) \geq \max_{x \in D} LCB_{t-1}(x)}$
 \end{itemize}

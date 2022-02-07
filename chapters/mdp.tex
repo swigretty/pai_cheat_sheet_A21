@@ -6,24 +6,39 @@ Given policy $\pi: X \rightarrow A$:
 \begin{itemize}
     \item Expected cumulative rewards: $J(\pi) = \E{\sum_{t=0}^{\infty} \gamma^t r(X_t, \pi(X_t))} =
 \sum_{x}P(X_{0}=x)V^{\pi}(x)$
-    \item Value function: $V^{\pi}(x) & = J(\pi | X_0 = x) = \mathbb{E}[\sum_{t=0}^{\infty} \gamma^t r(X_t, \pi(X_t)) | X_0 = x] \\
-         & = r(x, \pi(x)) + \gamma \sum_{x'} P(x' | x, \pi(x)) V^{\pi}(x')$\\
-    \begin{itemize}
-        \item compute $V^{\pi}$ exactly by solving linear system $=\mathcal{O}(n^3)$
-        \item fixed point iteration: For $t=1:T V^{\pi}_{t} = r^{\pi} + \gamma T^{\pi} V_{t-1}^{\pi}$,
-        will converge to $V^{*}$, since $B^{\pi}V$ is a contraction,
-        i.e $\norm{V^{\pi_{t+1}}(x) - V^{*}}_{\infty} \leq \norm{BV^{\pi_{t}}(x) - V^{*}}_{\infty}$.
-        and $V^{*}$ is a fixed point, i.e. $BV^{*} = V^{*}$.
-        More efficint if $T^{\pi}$ is sparse.
-    \end{itemize}
+    \item $V^{\pi}(x) & = J(\pi | X_0 = x) = \mathbb{E}[\sum_{t=0}^{\infty} \gamma^t r(X_t, \pi(X_t)) | X_0 = x] \\
+         & = r(x, \pi(x)) + \gamma \sum_{x'} P(x' | x, \pi(x)) V^{\pi}(x') = \E[a \sim \pi(x)]{Q^\pi(x,a)}=
+    \E[\pi]{G_t|X_t=x}$
+    \item $Q^\pi(x,a) = r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^\pi(x')= \E[\pi]{G_t|X_t=x, A_t=a}$
+    \item $G_t= \sum_{m=0}^{\infty} \gamma^m R(X_{t+m}, \pi(X_{t+m}))$
 \end{itemize}
 
 \textbf{Bellman:} Policy optimal $\leftrightarrow$ greedy wrt. to its induced value function:\\
+
 $\pi^*(x)=\underset{a\in A}{argmax} [r(x,a)+\gamma \sum_{x'}P(x'|x,a)V^*(x')] =
-\underset{a \in A}{argmax}Q^*(x,a)$\\
-$V^*(x) = \max_{a}(r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x')) \overset{t=\{0,..T\}}{=}
-\max_{a_{0:T}} \E[X_{1:T}]{\sum_{t=0}^{T} \gamma^t r(X_t, a_t, X_{t+1}) | X_0 = x} $\\
-$Q^*(x,a) = r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x') = \E[x']{r(x,a,x') + \gamma \max_{a}(Q^*(x',a))}$
+\underset{a \in A}{argmax}Q^*(x,a)$,
+
+$Q^*(x,a) = r(x,a) + \gamma \sum_{x'}P(x'|x,a) \underbrace{V^*(x')}_{\max_{a}(Q^*(x',a))}$,
+
+$V^*(x) = \max_{a}Q^*(x,a) = \max_{a}(r(x,a) + \gamma \sum_{x'}P(x'|x,a) V^*(x'))
+= \max_{a}\E[x']{r(x,a,x') + \gamma V^*(x')}
+\overset{t=\{0,..T\}}{=}
+\max_{a_{0:T}} \E[X_{1:T}]{\sum_{t=0}^{T} \gamma^t r(X_t, a_t, X_{t+1}) | X_0 = x} $,
+
+\textbf{Given $\pi$ calculate V}
+\begin{itemize}
+    \item compute $V^{\pi}$ exactly by solving linear system $=\mathcal{O}(n^3)$:
+    $V^\pi = (I-\gamma T^\pi)^{-1}r^\pi$ ($T_{x,x'}$)
+    \item fixed point iteration: For $t=1:T \\
+    V^{\pi}_{t} = r^{\pi} + \gamma T^{\pi} V_{t-1}^{\pi} =
+    B^{\pi}V^{\pi}_{t-1}$,
+    will converge to $V^{\pi}$, since $B^\pi$ is a contraction
+    i.e $\norm{V^{\pi}_{t} - V^{\pi}}_{\infty} = \norm{B^\pi V^{\pi}_{t-1} - B^{\pi}V^{\pi}}_{\infty}
+    \item \leq \gamma^{t} \norm{V_{0}^{\pi} - V^{\pi}}_{\infty}$,
+    (decays exponentially as $t \rightarrow \infty$),
+    $V^{\pi}$ is a fixed point, i.e. $BV^{\pi} = V^{\pi}$.
+    More efficient if $T^{\pi}$ is sparse.
+\end{itemize}
 
 
 \subsection{Policy iteration (Cost $O(n^3+nm\Delta)$)}
@@ -32,8 +47,8 @@ Until converged, do:\\
 - Compute value function $V^\pi (x)$\\
 - Compute greedy policy $\pi_G$ w.r.t. $V^\pi$\\
 - Set $\pi \leftarrow \pi_G$\\
-Guaranteed to monotonically improve and to converge to $\pi^*$ in $O(n^2m/(1-\gamma))$, 
-i.e. poly \# of iterations. However every iteration compute value function (e.g. fixed point iteration)
+Guaranteed to monotonically improve and to converge to $\pi^*$ in $O(n^2m/(1-\gamma))$ of iterations.
+However every iteration compute value function (e.g. fixed point iteration)
 
 \subsection{Value iteration (Cost $O(nm\Delta)$)}
 Initialize $V_0(x)=max_a r(x,a)$\\
@@ -43,7 +58,7 @@ $Q_t(x,a)=r(x,a)+\gamma\sum_{x'}P(x'|x,a)V_{t-1}(x')$\\
 - For each $x$, let $V_t(x)=\underset{a}{max}Q_t(x,a)$\\
 - Break if $||V_t-V_{t-1}||_{\infty}=\underset{x}{max}|V_t(x)-V_{t-1}(x)|\leq\epsilon$\\
 Then choose greedy policy w.r.t $V_t$.\\
-Guaranteed to converge to $\epsilon$-optimal policy, in poly \# of iterations
+Guaranteed to converge to $\epsilon$-optimal policy in same (poly) \# of iterations as policy iteration.
 
 \section{Reinforcement Learning}
 $P(x'|x,a), r(x,a)$ not known. $\tau = \underbrace{x_{0}, a_{0}}_{\text{input}},
@@ -54,8 +69,8 @@ Compared to supervised learning: data we get depends on actions \textrightarrow 
 Ex: TD-learning, $\epsilon$-greedy, SARSA\\
 \textbf{off-poliy RL}: get observational data. Ex: Q-learning, R_max
 
-\subsection{model based}
-estimate $P(x'|x,a), r(x,a)$ by calc avg. (exploration, choose best policy based on current estimate)
+\subsection{model based: estimate $P(x'|x,a), r(x,a)$}
+ by calc avg. (exploration, choose best policy based on current estimate)
 and simultaneous max. of J (exploitation)
 $\hat{P}(X_{t+1}|X_{t},A) = \frac{Count(X_{t+1}, X_{t}, A)}{Count(X_t, A)}$,
 $\hat{r}(x,a) = \frac{1}{N_{x,a}} \sum_{t:X_{t}=x, A_t=a} R(X_t, A_t)$\\
@@ -73,65 +88,100 @@ e.g $\epsilon_{t}:\frac{1}{t^{k}},\ k \in (0,1],\max\cset{0.1,\frac{1}{t}}$ not 
 \subsubsection{R_{max}}
 \begin{enumerate}
     \item init $r(x,a) = R_{max}, P(x^{\text{fairy}}|x,a)=1$ \textrightarrow optimal $\pi=$ random a
-    \item Follow $\pi$, update $r(x,a), P(x'|x,a)$
-    \begin{itemize}
-        \item when observed enough: $\hat{r}$: Hoeffding bound with $C=R_{max}, N=n_{x,a}$\\
+    \item Follow $\pi$, update $r(x,a), P(x'|x,a)$\\
+    when observed enough: $\hat{r}$ (acc. to Hoeffding bound with $C=R_{max}, N=n_{x,a}$)\\
         recompute optimal $\pi$ based on current $\hat{r}, \hat{P}$. Repeat 2.
-    \end{itemize}
 \end{enumerate}
 Number of steps required for $\epsilon$-optimal policy with prob $1-\delta$:
 poly in $n,m,T,\frac{1}{\epsilon}, log(\frac{1}{\delta}, R_{max})$
 
 
-\subsection{model free}
-estimate $V^{\pi(x)}, Q$ directly
+\subsection{model free: estimate $V^{\pi(x)}, Q$ directly}
 
-\subsubsection{TD-learing (on policy)}
+
+\subsubsection{Tabular MDP}
+
+
+\textbf{TD-learning (on policy)}
 Follow a given policy $\pi$ and obtain (x,a,r,x'):
 $\hat{V^\pi} \leftarrow (1-\alpha_{t})\hat{V^\pi} + \alpha_t (r + \gamma \hat{V^\pi}(x'))$
 current estimate added to reduce variance.
-Converges to $V^\pi$ with prob 1 if $\alpha_{t}$ satisfies \color{magenta}RM:\color{black}.
-(Sarsa same with Q function)
-\subsubsection{Q-learing (off-policy)}
+Converges to $V^\pi$ with prob 1 if $\alpha_{t}$ satisfies \color{magenta}RM:\color{black}.\\
+
+\textbf{Q-learing (off-policy)}
 $\hat{Q^*} \leftarrow (1-\alpha_{t})\hat{Q^*} + \alpha_t (r + \gamma \max_{a'}(\hat{Q^*}(x',a')))$
 Converges to $Q^*$ with prob 1 if $\alpha_{t}$ satisfies \color{magenta}RM:\color{black} and
 all (x,a) are chosen inf. often.
 Memory: $\mathcal{O}(nm)$, Comp time: per transition $\max_{a'}(\hat{Q^*}(x',a')) = \mathcal{O}(m)$
 However can be on-policy:
-optimistic Q-learning (see R_{max}), $\epsilon$-greedy Q-learning.
+optimistic Q-learning (see $R_{max}$), $\epsilon$-greedy Q-learning.
+
+\subsubsection{Value Function Approx (Large state space)}
+Q-learning: SGD update with $l(\theta; x,y,x',r) = \frac{1}{2}(
+\color{violet}Q(x,a,\theta) -r -\gamma \max_{a'}Q(x',a'; \theta_{old})\color{myblue})^2$,
+$\theta_{t+1} \leftarrow \theta_{t} - \alpha_{t} \color{violet}\delta_{t} \color{myblue} \nabla_{\theta}Q(x,a;\theta)$
+DQN: Prevent max. bias by replaciing $a'$ with $a^*(\theta) = \argmax_{a'}Q(x',a';\theta)$
+
+\subsubsection{Policy Search methods (Large Action set), on-policy}
+parametrize policy: $\pi(x)= \pi(x;\theta)$. $\theta^* =\argmax_{\theta}J(\theta)$,
+$J_T(\theta)=\E[\tau]{r(\tau)} \approx \frac{1}{m} = \sum_{i=1}^{m}r(\tau^{i})$,
+$r(\tau) = \sum_{t=0}^{T}\gamma^t r(x_t, a_t)$,
+\textbf{Policy Gradients:}
+$\nabla J_T(\theta) = \E[\tau \sim \pi_{\theta}]{(r(\tau) - b) \nabla \log \pi_{\theta}(\tau)}$,
+$\nabla \log \pi_{\theta}(\tau) = \sum_{t=0}^{T} \nabla_{\theta}
+\log \pi(a_t|x_t; \theta)$\\
+Reinforce: $b$ = $\sum_{t'=0}^{t-1} \gamma^{t'}r_{t'}$:
+$\theta \leftarrow \theta + \eta \gamma^t G_t \nabla_{\theta} \log \pi(a_t|x_t; \theta)$,
+$\nabla J_T(\theta) = \E[\tau \sim \pi_{\theta}]{\sum_{t=0}^{T}\gamma^t G_t \nabla_{\theta} \log \pi(a_t|x_t; \theta)}$
+
+\subsubsection{Actor ($\pi(x; \theta)$) Critic (approx Q)}
+Online: does not depend on rolout $\tau$ anymore.
+$\nabla J(\theta) = \E[(x,a) \sim \pi_{\theta_\pi}]{\sum_{t=0}^{\infty}\gamma^t Q(x_t, a_t)
+    \nabla_{\theta} \log \pi(a_t|x_t; \theta)}$
+Q depends on $\pi_{\theta_\pi}$ \textrightarrow not unbiased estimates anymore
+after observing (x,a,r,x')
+$\theta_\pi \leftarrow \theta_\pi + \eta_t Q(x,a;\theta_Q) \nabla \log \pi(a|x; \theta_{\pi})$,
+$\theta_{Q} \leftarrow \theta_{Q} - \eta_t Q(x,a;\theta_Q) -r - \gamma Q(x', \pi(x', \theta_{\pi})) \nabla Q(x,a;\theta_Q)$
 
 
-\subsection{Policy Gradients}
-\subsection{Actor Critic}
 
 
 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%% TODO: look at POMDP
+%\subsection{POMDP = Belief-state MDP}
+%New states = beliefs over states for original POMDP\\
+%$B=\Delta({1,...,n})=\{ b:{1,...,n} \rightarrow [0,1],\sum_x b(x)=1 \}$\\
+%Actions: same as original MDP\\
+%\textbf{Transition model:}\\
+%- Stochastic observation:\\
+%$P(Y_t|b_t)=\sum_{x=1}^n P(Y_t|X_t=x)b_t(x)$\\
+%- State update (Bayesian filtering!), given $b_t, y_t, a_t$:
+%$b_{t+1}(x')=\frac{1}{Z}\sum_xb_t(x)P(y_t|x)P(X_{t+1}=x'|X_t=x,a_t)$\\
+%Reward function: $r(b_t, a_t)=\sum_x b_t(x)r(x,a_t)$
+%
+%\subsection{Example of approx. solution to POMDPs: Policy gradients}
+%- Assume parameterized policy: $\pi(b)=\pi(b;\theta)$\\
+%- For each parameter $\theta$ the policy induces a Markov chain\\
+%- Can compute expected reward $J(\theta)$ by sampling.\\
+%- Find optimal parameters through search (gradient ascent):
+%$\theta^* = \underset{\theta}{arg max}\quad J(\theta)$
+%
+%
+%\begin{itemize}
+%    \item every finite MDP with bounded rewards and $gamma \in \left[ 0,1)$ has at least one optimal policy and
+%    unique value function
+%\end{itemize}
+%
 
 
 
-
-
-% TODO: look at POMDP
-\subsection{POMDP = Belief-state MDP}
-New states = beliefs over states for original POMDP\\
-$B=\Delta({1,...,n})=\{ b:{1,...,n} \rightarrow [0,1],\sum_x b(x)=1 \}$\\
-Actions: same as original MDP\\
-\textbf{Transition model:}\\
-- Stochastic observation:\\
-$P(Y_t|b_t)=\sum_{x=1}^n P(Y_t|X_t=x)b_t(x)$\\
-- State update (Bayesian filtering!), given $b_t, y_t, a_t$:
-$b_{t+1}(x')=\frac{1}{Z}\sum_xb_t(x)P(y_t|x)P(X_{t+1}=x'|X_t=x,a_t)$\\
-Reward function: $r(b_t, a_t)=\sum_x b_t(x)r(x,a_t)$
-
-\subsection{Example of approx. solution to POMDPs: Policy gradients}
-- Assume parameterized policy: $\pi(b)=\pi(b;\theta)$\\
-- For each parameter $\theta$ the policy induces a Markov chain\\
-- Can compute expected reward $J(\theta)$ by sampling.\\
-- Find optimal parameters through search (gradient ascent):
-$\theta^* = \underset{\theta}{arg max}\quad J(\theta)$
-
-
-\begin{itemize}
-    \item every finite MDP with bounded rewards and $gamma \in \left[ 0,1)$ has at least one optimal policy and
-    unique value function
-\end{itemize}

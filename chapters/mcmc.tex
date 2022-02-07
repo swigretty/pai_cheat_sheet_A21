@@ -7,9 +7,9 @@ $\pi_{t}=p(X_{t})=\begin{bmatrix} P(X_{t}=1) \\ ... \\ P(X_{t}=n) \end{bmatrix},
 i.e. $\pi_{2}(i) = P(X_{2}=i) = \sum_{j=1}^{n}P(X_{2}=i|X_{1}=j)P(X_{1}=j)= \left[T\pi_{1}\right]_{i}$
 \begin{itemize}
 	\item Stationarity: $\exists \pi: \color{gray}z \color{myblue}\pi = T \color{gray}z \color{myblue}\pi
-	\rightarrow (I-H)\pi =0$
+	\rightarrow (I-T)\pi =0$
 	\item Ergodicity: $\exists t \in N: T^{t}$ contains only pos. ele.
-	\item Convergence: $\pi_{t+1} = T^{t}\pi_{1} \lim\limits_{t \to \infty} \pi$
+	\item Convergence: $\pi_{t+1} = T^{t}\pi_{1} \underset{t \to \infty}{\rightarrow} \pi$
 	\item DBE is satisfied by a M.C for a given $\pi$ if $\Forall {i,j} \in S
 	\color{gray}z \color{myblue}\pi_{i}T_{ji} = \color{gray}z \color{myblue}\pi_{j}T_{ij}$
 	\begin{itemize}
