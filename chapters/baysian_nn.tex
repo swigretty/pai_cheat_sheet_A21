@@ -6,9 +6,9 @@ Modeling heteroscedastic aleatoric noise, \color{orange}EX1: $p(y|x,\theta) =
 $\hat{\theta} = \argmin_\theta - \log p(\theta) - \sum_{i=1}^{n}\logp(y_{i}|x_{i},\theta)
 \overset{\color{orange} \text{EX1}, \color{myblue} p(\theta)=\mathcal{N}(0,I)}{=}
 \argmin_\theta \lambda \norm{\theta}_{2}^{2} +
-\frac{1}{2} (\sum_{i=1}^{n} \underbrace{\frac{1}{\sigma(x;\theta)^{2}}}_{\text{large var}}
-    \underbrace{\norm{y_{i}-\mu(x_{i},\theta)}^2_{2}}_{\text{fit data}}
- + \underbrace{\log \sigma(x_{i}, \theta)^{2}}_{\text{penalty for large var}})$
+\frac{1}{2} (\sum_{i=1}^{n} \underset{\text{large var}}{\frac{1}{\sigma(x;\theta)^{2}}}
+    \underset{\text{fit data}}{\norm{y_{i}-\mu(x_{i},\theta)}^2_{2}}
+ + \underset{\text{penalty for large var}}{\log \sigma(x_{i}, \theta)^{2}})$
 
 \subsection{Predictions}
 
@@ -16,25 +16,25 @@ $\E{y^{*}|X,y,x^{*}} \overset{\color{orange}EX1 \color{myblue}}{\approx}
 \bar{\mu(x^{*})} := \frac{1}{m} \sum_{j=1}^{m}\mu(x^{*}, \theta^{j}) $
 
 $Var(y^{*}|X,y,x^{*}) \overset{\ref{random vars} \text{total var}}{=}$
-$\underbrace{\E {Var(y^{*}|x^{*},\theta)}}_{\text{1: Aleatoric unc}} +$
-$\underbrace{Var(\E{y^{*}}|x^{*}, \theta)}_{\text{2: Epistemic unc}}$,
-1$\approx \frac{1}{m} \sum_{j=1}^{m}\sigma(x^{*},\theta^{j})^{2}$,
-2$\approx \frac{1}{m} \sum_{j=1}^{m}\bb{\mu(x^{*},\theta^{j})-\bar{\mu}(x^{*})}^{2}$
+$\color{green}\E {Var(y^{*}|x^{*},\theta)} \color{myblue}+$
+$\color{blue}Var(\E{y^{*}}|x^{*}, \theta) \color{myblue}$,
+\color{green}Aleatoric \color{black}$\approx \frac{1}{m} \sum_{j=1}^{m}\sigma(x^{*},\theta^{j})^{2}$,
+\color{blue} Epistemic \color{black}$\approx \frac{1}{m} \sum_{j=1}^{m}\bb{\mu(x^{*},\theta^{j})-\bar{\mu}(x^{*})}^{2}$
 No guarantees that estimated uncertainty is representative of true distr.
 
-\subsection{Monte Carlo Drop-out}
-VI with family: $q(\theta|\lambda) = \prod_{j} p_{0} p(\theta_{j} = 0) + (1-p_{0})
-p(\theta_{j}=\lambda_{j})$,
-weight set to 0 with $p_{0}$,
-
-\subsection{Ensembles}
-Bootstrap Map Estimates (sampl unif with replacement). Avg across models
-
-\subsection{Calibration}
-Reliability diag: $y: acc(B_{m}) = \frac{1}{\abs{B_{m}}} \sum_{i \in B_{m}} 1 ({\hat{y_{i}}}=y_{i})$,
-$x: conf(B_{m})= \frac{1}{\abs{B_{m}}} \sum_{i \in B_{m}} \hat{p}(y_{i}=1)$ (avg confidence within bin)
-perfectly calibrated if: $acc(B_{m})=conf(B_{m})$, if $p(\hat{Y}=y|\hat{P}=p)=p$
-$ECE = \sum_{m=1}^{M}\frac{\abs{B_{m}}}{n} \abs{acc(B_{m})-conf(B_{m})}$
-Accuracy NLL disconnect, test error still decreases but NLL of test data starts to increase (Jensen)
+%\subsection{Monte Carlo Drop-out}
+%VI with family: $q(\theta|\lambda) = \prod_{j} p_{0} p(\theta_{j} = 0) + (1-p_{0})
+%p(\theta_{j}=\lambda_{j})$,
+%weight set to 0 with $p_{0}$,
+%
+%\subsection{Ensembles}
+%Bootstrap Map Estimates (sampl unif with replacement). Avg across models
+%
+%\subsection{Calibration}
+%Reliability diag: $y: acc(B_{m}) = \frac{1}{\abs{B_{m}}} \sum_{i \in B_{m}} 1 ({\hat{y_{i}}}=y_{i})$,
+%$x: conf(B_{m})= \frac{1}{\abs{B_{m}}} \sum_{i \in B_{m}} \hat{p}(y_{i}=1)$ (avg confidence within bin)
+%perfectly calibrated if: $acc(B_{m})=conf(B_{m})$, if $p(\hat{Y}=y|\hat{P}=p)=p$
+%$ECE = \sum_{m=1}^{M}\frac{\abs{B_{m}}}{n} \abs{acc(B_{m})-conf(B_{m})}$
+%Accuracy NLL disconnect, test error still decreases but NLL of test data starts to increase (Jensen)
 
 

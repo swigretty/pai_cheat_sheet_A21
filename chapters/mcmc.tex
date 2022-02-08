@@ -20,8 +20,7 @@ i.e. $\pi_{2}(i) = P(X_{2}=i) = \sum_{j=1}^{n}P(X_{2}=i|X_{1}=j)P(X_{1}=j)= \lef
 Ergodic M.C convergence to unqiue stat. distr $\pi$ ind. of $\pi_{1}$\\
 M.C. satisfies DBE for $\pi \rightarrow \pi$ is stationary for M.C.
 
-\subsection{Metropolis Hastings}
-Designing M.C. i.e. find $T_{ij}$
+\subsection{Metropolis Hastings, find $T_{ij}$}
 \begin{enumerate}
   \item Proposal distribution $\cDist{T}{X'}{X}$\\
   Given $X_t=x$, sample ``proposal'' $x'\sim \cDist{T}{X'}{X=x}$
@@ -35,44 +34,38 @@ Designing M.C. i.e. find $T_{ij}$
     With prob. $1-\alpha$, set $X_{t+1}=x$
 \end{enumerate}
 $T_{ij}^{new} = \alpha_{ij}T_{ij}^{old} + 1 \{i=j\} \sum_{k=1}^{n}T_{kj}*(1-\alpha_{kj})$
-Columns of $T_{ij}$ need to sum to 1. \\
-Satisfies DBE, $\rightarrow \frac{1}{Z} Q(x)$ is stationary for M.C. \\
+Columns of $T_{ij}$ need to sum to 1.;
+Satisfies DBE, $\rightarrow \frac{1}{Z} Q(x)$ is stationary for M.C.;
 The performance of the algorithm will strongly depend on $T$.\\
+\textbf{Gibbs Sampling}
+State $X^{(t)} \in R^{d}$, $X_{-i}^{(t)} \in R^{d-1}$; init $x^{0}$;For $t= 1: \infty$:\\
+$x_{i}^{t+1} =
+\begin{cases}
+  x_{i}^{t} & \text{if $i \neq I$}\\
+  x \sim \pi(\cdot| x_{-I}^{t}) & \text{if $i = I$}\\
+\end{cases}$
+
+$\pi(\cdot| x_{-I}^{t}) = \frac{Q(x_{I}, x_{(-I)})}{\sum_{x_{I} \in S}Q(X_{I}=x_{I}, x_{(-I)})}$,
+Satisfies DBE: $\pi(x^{(t)})T(x^{(t+1)}|x^{(t)}) = \pi(x^{(t+1)})T(x^{(t)}|x^{(t+1)})$
 
 \subsubsection{Continuous Random Var X}
 $Q(x) = \frac{1}{Z}\exp(-f(x))$ is log-concave if f convex.\\
 M.C. always ergodic (state space=suport, by definition pos prob everywhere)\\
 use gradient info:
 \begin{itemize}
-	\item \textbf{Mala:} Proposal $T(x'|x) = \mathcal{N}(x'; x-\tau \nabla f(x), 2 \tau I)$ \\
-	convergence to target distr. guaranteed, efficient convergence for log-concave distr.
+	\item \textbf{Mala:} Proposal $T(x'|x) = \mathcal{N}(x'; x-\tau \nabla f(x), 2 \tau I)$; convergence to target distr.
 	\item If $T(x'|x) = \mathcal{N}(x'; x, JI) \rightarrow$ MH with $\alpha =
 	\min\{1,\exp(f(x)-f(x'))\}$
 	\item \textbf{SGLD:} use approx f, requires grad of joint prob $p(\theta, y_{1:n})$ same used for MAP
 	\begin{itemize}
 		\item $i_{1},..,i_{m} \sim \text{Unif}(\{1,..n\})$, $\epsilon_{t} \sim \mathcal{N}(0, 2\eta_{t}I)$
-		\item 	\item $\theta_{t+1} = \theta_{t}-\eta_{t}_{t}\color{orange}(\nabla \log(p(\theta_{t})) +
-		\frac{n}{m} \sum_{j=1}^{m} \eta \log p(y_{i_{j}}|\theta_{t}, x_{i_{j}}))$$+ \epsilon_{t}$
-		\item $\color{orange} \approx \nabla \E[\theta, y_{1:n}]{p(\theta, y_{1:n})}$
-		\item if $\eta_{t} \in \Theta(t^{-(1/3)})$ guaranteed to converge to stat. distr.
+		\item $\theta_{t+1} = \theta_{t}-\eta_{t}\color{orange}(\nabla \log(p(\theta_{t})) +
+		\frac{n}{m} \sum_{j=1}^{m} \eta \log p(y_{i_{j}}|\theta_{t}, x_{i_{j}}))$$+ \epsilon_{t}$,
+		($\color{orange} \approx \nabla \E[\theta, y_{1:n}]{p(\theta, y_{1:n})}$),
+		if $\eta_{t} \in \Theta(t^{-(1/3)})$ guaranteed to converge to stat. distr.
 	\end{itemize}
 \end{itemize}
 
-\begin{algorithm}[H]
-\DontPrintSemicolon
-State $X^{(t)} \in R^{d}$, $X_{-i}^{(t)} \in R^{d-1}$\\
-init $x^{0}$\;
-\For{$t\gets 1$ \KwTo $\infty$}{
-	$I \sim \text{Unif}(\set{1,\ldots,d})$\;
-	$x_{i}^{t+1} =
-	\begin{cases}
-      x_{i}^{t} & \text{if $i \neq I$}\\
-      x \sim \pi(\cdot| x_{-I}^{t}) & \text{if $i = I$}\\
-    \end{cases}$
-}
-\caption{Gibbs Sampling:}
-\end{algorithm}
-$\pi(\cdot| x_{-I}^{t}) = \frac{1}{\sum_{x_{I} \in S}Q(X_{I}=x_{I}, x_{(-I)})}Q(x_{I}, x_{(-I}))$ \\
-Satisfies DBE: $\pi(x^{(t)})T(x^{(t+1)}|x^{(t)}) = \pi(x^{(t+1)})T(x^{(t)}|x^{(t+1)})$
+
 
 

@@ -12,9 +12,9 @@ COV(y)=XCOV(w)X^{\top} + COV(\epsilon)$
 
 $\prob{w|X,y}=\mathcal{N}(\bar{\mu}, \bar{\Sigma}),\
 \bar{\Sigma}=(\frac{1}{\sigma_{n}^{2}}X^{\top}X+\frac{1}{\sigma_{p}^{2}}I)^{-1},\
-\bar{\mu}=\frac{1}{\sigma_{n}^{2}}\bar{\Sigma}X^{\top}y$\\
+\bar{\mu}=\frac{1}{\sigma_{n}^{2}}\bar{\Sigma}X^{\top}y$,
 \textbf{Prediction:} $\prob{y^{*}|X,y,x^{*}} = \mathcal{N}(y^{*}; \bar{\mu}^{\top}x^{*},
-x^{*}^{\top}\bar{\Sigma}x^{*} + \sigma_{n}^{2}) = \int \prob{y^{*}|f^{*}} \prob{f^{*}| X, y, x^{*}} df^{*}$\\
+x^{*}^{\top}\bar{\Sigma}x^{*} + \sigma_{n}^{2}) = \int \prob{y^{*}|f^{*}} \prob{f^{*}| X, y, x^{*}} df^{*}$,
 $\prob{f^{*}| X, y, x^{*}} = \mathcal{N}(f^{*}; \bar{\mu}^{\top}x^{*}, x^{*}^{\top}\bar{\Sigma}x^{*})$
 
 \subsection{GP}
@@ -25,15 +25,15 @@ $\sim \mathcal{N}\big( \begin{bmatrix} \mu(x) \\ \mu(x_{A})\end{bmatrix},
 $f|y_{A} \sim GP(\bar{\mu}, \bar{k})$,
 $\bar{\mu}(x) = \mu(x) + k_{x,A}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}(y_{A}-\mu(x_{A})$,
 $\bar{k}(x,x')= k(x,x')-k_{xA}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}k_{xA}$\\
-Online update:
-$f_{t} \sim GP(\mu_{t}, k_{t})$, $y_{t}=f(x_{t})+\epsilon_{t}$,
-$\begin{bmatrix} f|y_{1:t}(x') \\ f|y_{1:t}(x'')\\ y_{t+1}\end{bmatrix} =
-\begin{bmatrix} f_{t}(x') \\ f_{t}(x'') \\ f_{t}(x_{t+1}) \end{bmatrix} +
-\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}\epsilon_{t+1}$
-$\sim \mathcal{N}\big(\begin{bmatrix} \mu_{t}(x') \\ \mu_{t}(x'') \\ \mu_{t}(x_{t+1}) \end{bmatrix}, K_{x',x'',x_{t+1}} \big)$,
-$K_{x',x'',x_{t+1}} = \begin{bmatrix} k_{t}(x',x') & k_{t}(x',x'') & k_{t}(x',x_{t+1})\\
-    k_{t}(x',x'') & k_{t}(x'',x'') & k_{t}(x'',x_{t+1}) \\
-    k_{t}(x_{t+1},x') & k_{t}(x_{t+1},x'') & k_{t}(x_{t+1},x_{t+1})+\sigma_{n}^{2}\end{bmatrix}$
+%Online update:
+%$f_{t} \sim GP(\mu_{t}, k_{t})$, $y_{t}=f(x_{t})+\epsilon_{t}$,
+%$\begin{bmatrix} f|y_{1:t}(x') \\ f|y_{1:t}(x'')\\ y_{t+1}\end{bmatrix} =
+%\begin{bmatrix} f_{t}(x') \\ f_{t}(x'') \\ f_{t}(x_{t+1}) \end{bmatrix} +
+%\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}\epsilon_{t+1}$
+%$\sim \mathcal{N}\big(\begin{bmatrix} \mu_{t}(x') \\ \mu_{t}(x'') \\ \mu_{t}(x_{t+1}) \end{bmatrix}, K_{x',x'',x_{t+1}} \big)$,
+%$K_{x',x'',x_{t+1}} = \begin{bmatrix} k_{t}(x',x') & k_{t}(x',x'') & k_{t}(x',x_{t+1})\\
+%    k_{t}(x',x'') & k_{t}(x'',x'') & k_{t}(x'',x_{t+1}) \\
+%    k_{t}(x_{t+1},x') & k_{t}(x_{t+1},x'') & k_{t}(x_{t+1},x_{t+1})+\sigma_{n}^{2}\end{bmatrix}$
 
 
 \subsection{Baysian Model Selection}

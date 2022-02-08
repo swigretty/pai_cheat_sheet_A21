@@ -1,15 +1,15 @@
 \section{Probability}
 \subsection{Normal dist.}
 $\mathcal{N}(x\:|\: \mu, \sigma^{2}) = \frac{1}{\sigma \sqrt{2\pi}}\exp\bb{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}}$\\
-For multivariate case, where $\bm{\Sigma}$ is p.d. ($(\bm{\Sigma})_{i,j} = \E{(X_{i} - \mu_{i})(X_{j} - \mu_{j})}$),
-we have $\mathcal{N}_{n}(\bm{x}\:|\: \bm{\mu}, \bm{\Sigma}) =
-(2\pi)^{-\frac{n}{2}}\det(\bm{\Sigma})^{-\frac{1}{2}}\exp\bb{-\frac{1}{2}(\bm{x} -
-\bm{\mu})^{\top}\bm{\Sigma}^{-1}(\bm{x} - \bm{\mu})}$
-Suppose we have a Gaussian random vector $X_V \sim N(\mu_V, \Sigma_{VV})$.\\
-Suppose we take two disjoint subsets of V: $A={i_1,...,i_k}$ and $B={j_1,...,j_m}$.\\
-Then, the conditional distribution: \\
-$P(X_A|X_B=x_B)=N(\mu_{A|B}, \Sigma_{A|B})$ is Gaussian:\\
-$\mu_{A|B}=\mu_A+\Sigma_{AB}\Sigma^{-1}_{BB}(x_B-\mu_B)$\\
+
+$\mathcal{N}_{n}(\bm{x}\:|\: \bm{\mu}, \bm{\Sigma}) =
+(2\pi)^{-\frac{n}{2}}\det(\bm{\Sigma})^{-\frac{1}{2}}\exp \big(-\frac{1}{2}(\bm{x} -
+\bm{\mu})^{\top}\bm{\Sigma}^{-1}(\bm{x} - \bm{\mu}) \big)$\\
+%Suppose we have a Gaussian random vector $X_V \sim N(\mu_V, \Sigma_{VV})$.\\
+%Suppose we take two disjoint subsets of V: $A={i_1,...,i_k}$ and $B={j_1,...,j_m}$.\\
+%Then, the conditional distribution: \\
+%$P(X_A|X_B=x_B)=N(\mu_{A|B}, \Sigma_{A|B})$ is Gaussian:\\
+$\mu_{A|B}=\mu_A+\Sigma_{AB}\Sigma^{-1}_{BB}(x_B-\mu_B)$,
 $\Sigma_{A|B}=\Sigma_{AA}-\Sigma_{AB}\Sigma^{-1}_{BB}\Sigma_{BA}$
 
 \subsection{Categorical dist.}
@@ -18,24 +18,37 @@ $\sum_{j=1}^{m}\pi_{j} = 1$
 $\prob{y}[\bm{\pi}] = \prod_{j=1}^{m}\pi_{j}^{\mathbbm{1}[y = j]}$,
 $\pi_{j}=\text{softmax}(w^{\top}x)_{j} = \prob{Y=j}[\bm{x,w}] \overset{\text{y one-hot}}{=}
 \frac{\exp(w_{j}^{\top}x)}{\sum_{j=1}^{m}\exp(w_{j}^{\top}x)}$,
-$\text{CE} (\bm{y},\bm{w})=-\sum_{j=1}^{m}\sum_{i=1}^{n}1\cset{y_{i}=j}*log(\text{softmax}(\bm{w}^{\top}x_{i})_{j})$,
-$\text{BinaryCE} (\bm{y},\bm{w}) =\lext{LogisticLoss} \overset{y\epsilon\{0,1\}}{=} -\sum_{i=1}^{n}(y_{i}\log(
+$\text{CE} (\bm{y},\bm{w})=-\sum_{j=1}^{m}\sum_{i=1}^{n}1\cset{y_{i}=j}* \log (\text{softmax}(\bm{w}^{\top}x_{i})_{j})$,
+$\lext{Logistic} (\bm{y},\bm{w}) \overset{y\epsilon\{0,1\}}{=} -\sum_{i=1}^{n}(y_{i}\log(
 \sigma(\bm{w}^{\top}x_{i}))+(1-y_{i})\log(1-\sigma(\bm{w}^{\top}x_{i})))
 \overset{y\epsilon\{-1,1\}}{=}\sum_{i=1}^{n}\log(1+\exp(-y_{i}\bm{w}^{\top}x_{i}))$;
 where
 $\pi = \sigma(\bm{w}^{\top}x) = \prob{Y=1}[\bm{x,w}] = \frac{exp(\bm{w}^{\top}x)}{1 + exp(\bm{w}^{\top}x)} =
 \frac{1}{1 + exp(-\bm{w}^{\top}x)}$. $\prob{y}[\bm{x,w}] \overset{y\epsilon\{-1,1\}}{=}
-\frac{1}{1 + exp(-y\bm{w}^{\top}x)}$
+\frac{1}{1 + exp(-y\bm{w}^{\top}x)}$ \\
+
+\begin{itemize}
+    \item $X \sim Binom(n, \theta): p(x|\theta) = \binom{n}{k}p^{k}(1-p)^{n-k}$, $\E {X}=np$, $Var(X)=np(1-p)$,
+$\binom{n}{k} = \frac{n!}{k!(n-k)!}$
+    \item $X \sim Lap(\mu, b)$, $\E {X} = \mu$, $\hat{\mu_{MLE}}$ = Median, $Var(X) = 2 b^2$
+    \item $X \sim Unif(a, b)$, $x \in \left[ a,b \right]$,
+$p(x|a,b) = \frac{1}{b-a} 1_{\left[ a,b \right]}(x)$,
+$\E {X} = \frac{1}{2}(a+b)$, $\hat{\mu_{MLE}} = \frac{X_{(1)} + X_{(n)}}{2}$,
+$Var(X) = \frac{1}{12}(b-a)^2$
+    \item $X \sim Pois(\theta)$, $\theta > 0$, $x \in (0, \infty)$,
+$p(x|\theta) = \exp (x \log(\theta)- \theta) \frac{1}{x!})$,
+$\E {X} = \theta = Var(X)$
+    \item $X \sim Exp(\theta)$, $p(x| \theta) = \exp ( \log(\theta) - \theta x)$
+$\E {X} = \frac{1}{\theta}$,  $Var(X) =\frac{1}{\theta^2}$, $H(p) = 1- \log (\theta)$
+
+\end{itemize}
+
+%\subsection{Multinomial dist.}
+%Let $n$ number of trials, $p_{1}, \dots, p_{k}$ event prob., $x_{i} \in \cset{0, \dots, n}$ with
+%$\sum_{i=1}^{k}x_{i} = n$. PMF $\frac{n!}{x_{1}!\cdot\cdot\cdot x_{k}!}p_{1}^{x_{1}}\cdot\cdot\cdot p_{k}^{x_{k}}$.
+%$\E{X_{i}} = np_{i}, \Var{X_{i}} = np_{i}(1 - p_{i})$.
 
 
-\subsection{Binomial dist.}
-Let $n$ number of trials, $p$ success prob., $k$ number of successes. PMF $\binom{n}{k}p^{k}(1-p)^{n-k}$, mean $np$,
-variance $np(1-p)$. Remember $\binom{n}{k} = \frac{n!}{k!(n-k)!}$
-
-\subsection{Multinomial dist.}
-Let $n$ number of trials, $p_{1}, \dots, p_{k}$ event prob., $x_{i} \in \cset{0, \dots, n}$ with
-$\sum_{i=1}^{k}x_{i} = n$. PMF $\frac{n!}{x_{1}!\cdot\cdot\cdot x_{k}!}p_{1}^{x_{1}}\cdot\cdot\cdot p_{k}^{x_{k}}$.
-$\E{X_{i}} = np_{i}, \Var{X_{i}} = np_{i}(1 - p_{i})$.
 
 \subsection{Bayes}
 $\prob{A_{i}}[B] = \frac{\prob{B}[A_{i}]\prob{A_{i}}}{\prob{B}} \overset{\text{t.p.}}{=}
@@ -55,14 +68,13 @@ Gaussian prior: $+\frac{\sigma_{n}^{2}}{\sigma_{p}^{2}} \norm{w}_{2}^{2}$
 Laplace prior: $+\frac{2\sigma_{n}^{2}}{b} \norm{w}_{1}$
 $w_{LS} = w_{MLE}\overset{\sigma_{p}^{2} \rightarrow \infty}{=} w_{MAP}$
 
-\subsection{Exp \& Var \& Cov}
-Cov can be neg.
+\subsection{Exp \& Var \& Cov(can be neg)}
 \subsubsection{Random Variables $X,Y \in R$} \label{random vars}
 \begin{itemize}
     \item $E[sgn(X)] = P(X>0)-P(X<0)$
     \item $E[X] = \E[Y]{\E[X]{X|Y}}$ total exp
-    \item $Var(X) = \E {Var(X|Y)} + Var(\E {X|Y})$ (total var)
-    \item $Cov(X,Y) = \E {XY} - \E {X}\E {Y} = Cov(Y,X)$
+    \item $Var(X) = \E {Var(X|Y)} + Var(\E {X|Y})$ (tot var)
+    \item $Cov(X,Y) = \E {XY} - \E {X}\E {Y} = \E{(X - \E {X})(Y - \E {Y})} = Cov(Y,X)$
     \item $Cov(aX,Y) = aCov(X,Y)$, $Cov(X +c,Y)$
     \item $Cov(X+Y, Z) = Cov(X,Z) + Cov(Y,Z)$
     \item $Cov(X,Y)^{2} \overset{\text{Cauchy Schw.}}{\leq} Var(X)Var(Y)$
@@ -71,41 +83,41 @@ Cov can be neg.
 \end{itemize}
 \subsubsection{Random Vectors: $\bm{z},\ \bm{\mu}= \E {\bm{z}} \in R^{d}$}
 \begin{itemize}
-    \item $\bm{\Sigma} = COV(\bm{z}) = \E {\bm{z}\bm{z}^{\top}} - \E {\bm{z}} \E {\bm{z}}^{\top}$
+    \item $\bm{\Sigma} = COV(\bm{z}) = \E {\bm{z}\bm{z}^{\top}} - \E {\bm{z}} \E {\bm{z}}^{\top}$,
+    $(\bm{\Sigma})_{i,j} = Cov(z_{i}, (z_{j})$
     \item $\E {\bm{z}^{\top}\bm{A}\bm{z}} = tr(\bm{A}\bm{\Sigma}) + \bm{\mu}^{\top}\bm{A}\bm{\mu}$
     \item $Var(\bm{a}^{\top}\bm{z}) = \bm{a}^{\top}\bm{\Sigma}\bm{a} \in R$, $Cov(\bm{A}\bm{z}) = \bm{A}\bm{\Sigma}\bm{A}^{\top}$
 \end{itemize}
 
 
-\subsection{Review Probability}
-
-\textbf{Union:} $P(A\cup B)=P(A)+P(B)-P(A\cap B)$
-
-\textbf{Rules for joint distributions:}\\
-Sum rule (Marginalization):\\
-    $P(X_{1:i-1}, X_{i+1:n})=\sum_{x_i}P(X_{1:i-1}, X_i=x_i, X_{i+1:n})$
-Product rule (Chain rule):\\
-    $P(X_{1:n})=P(x_1)P(X_2|X_1)...P(X_n|X_{1:n-1})$
-
-\textbf{Conditional Independence:}\\
-$X\perp Y | Z $ iff $P(X,Y|Z)=P(X|Z)P(Y|Z)$\\
-If $P(Y|Z)>0 \Rightarrow P(X|Z,Y)=P(X|Z)$
-
-\textbf{Properties of Conditional Independence:}\\
-Symmetry: $X \perp Y$ | $Z \Rightarrow Y \perp X$ | $Z$\\
-Decomposition: $X \perp (Y,W)$ | $Z \Rightarrow X \perp Y$ | $Z$\\
-Contraction: $(X \perp Y$ | $Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$\\
-Weak union: $X \perp Y,W$ | $Z \Rightarrow X \perp Y$ | $Z, W$\\
-Intersection: $(X \perp Y$ | $W, Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$
+%\subsection{Review Probability}
+%
+%\textbf{Union:} $P(A\cup B)=P(A)+P(B)-P(A\cap B)$
+%
+%\textbf{Rules for joint distributions:}\\
+%Sum rule (Marginalization):\\
+%    $P(X_{1:i-1}, X_{i+1:n})=\sum_{x_i}P(X_{1:i-1}, X_i=x_i, X_{i+1:n})$
+%Product rule (Chain rule):\\
+%    $P(X_{1:n})=P(x_1)P(X_2|X_1)...P(X_n|X_{1:n-1})$
+%
+%\textbf{Conditional Independence:}\\
+%$X\perp Y | Z $ iff $P(X,Y|Z)=P(X|Z)P(Y|Z)$\\
+%If $P(Y|Z)>0 \Rightarrow P(X|Z,Y)=P(X|Z)$
+%
+%\textbf{Properties of Conditional Independence:}\\
+%Symmetry: $X \perp Y$ | $Z \Rightarrow Y \perp X$ | $Z$\\
+%Decomposition: $X \perp (Y,W)$ | $Z \Rightarrow X \perp Y$ | $Z$\\
+%Contraction: $(X \perp Y$ | $Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$\\
+%Weak union: $X \perp Y,W$ | $Z \Rightarrow X \perp Y$ | $Z, W$\\
+%Intersection: $(X \perp Y$ | $W, Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$
 
 
 \subsection{Law of Large Number}
 $\E[\theta \sim p(\theta|y_{1:n})]{p(y^{*}|x^{*}, \theta)} =
-\lim\limits_{N \to \infty} \frac{1}{N} \sum_{i=1}^{N}p(y^{*}|x^{*}, \theta_{i})$, $\theta_{i}$ iid from $p(\theta|y_{1:n})$\\
+\lim\limits_{N \to \infty} \frac{1}{N} \sum_{i=1}^{N}p(y^{*}|x^{*}, \theta_{i})$, $\theta_{i}$ iid from $p(\theta|y_{1:n})$
 
-\subsection{Hoeffding's iequality}
-f bounded in $\left[0,C\right]$:\\
-$P\bb{\abs{\E[p]{f(x)}-\frac{1}{N}\sum_{i=1}^{N}f(x_{i})} > \epsilon} \leq 2\exp(-\frac{2N\epsilon^{2}}{C^2})$
+\textbf{Hoeffding's iequality}: f bounded in $\left[0,C\right]$: $P\bb{\abs{\E[p]{f(x)}-\frac{1}{N}
+\sum_{i=1}^{N}f(x_{i})} > \epsilon} \leq 2\exp(-\frac{2N\epsilon^{2}}{C^2})$
 $N \geq \frac{C^2}{2\epsilon^2}\ln{\frac{2}{\delta}} \rightarrow$ error $\leq \epsilon$ with prob $1 - \delta$
 
 

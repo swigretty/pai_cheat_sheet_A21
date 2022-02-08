@@ -4,11 +4,11 @@ collect data that max. reduces uncertainty about unknown model.
 \subsection{Mutual Information}
 $I(X;Y)=H(X)-H(X|Y)=I(Y;X)$\\
 $H(X|Y) = \E[y \sim p(y)]{H(X|Y=y)} = \E{\E{-\log p(X|Y)|Y=y}} =$
-$\int_{\mathcal{Y}}\int_{\mathcal{X}} -\log p(x|y) p(x|y) p(y) dx dy=$
-$\E[x,y \sim p(x,y)]{-\log \frac{p(x,y)}{p(y)}} =$
-$\int_{\mathcal{Y}}\int_{\mathcal{X}} - \log p(x,y) p(x,y) dx dy$
-$+ \underbrace{\int_{\mathcal{Y}}\int_{\mathcal{X}} \log p(y) p(x,y) dx dy}_{\int_{\mathcal{Y}} \log p(y) p(y)}
-= H(X,Y) - H(Y)$
+%$\int_{\mathcal{Y}}\int_{\mathcal{X}} -\log p(x|y) p(x|y) p(y) dx dy=$
+%$\E[x,y \sim p(x,y)]{-\log \frac{p(x,y)}{p(y)}} =$
+%$\int_{\mathcal{Y}}\int_{\mathcal{X}} - \log p(x,y) p(x,y) dx dy$
+%$+ \underbrace{\int_{\mathcal{Y}}\int_{\mathcal{X}} \log p(y) p(x,y) dx dy}_{\int_{\mathcal{Y}} \log p(y) p(y)}=$
+$H(X,Y) - H(Y)$
 $ H(X|Y) = H(X) \leftrightarrow X \perp Y \leftrightarrow I(X;Y) = 0$\\
 $H(X|Y)=0 \leftrightarrow \text{ X is completely determined by Y} \leftrightarrow  I(X;Y) = H(X) = H(Y)$\\
 \textbf{EX1:} $X \sim \mathcal{N}(\mu, \Sigma),\ Y=X+\epsilon,
@@ -35,9 +35,12 @@ $x_{t+1} = \argmax_{x}F(S_{t} \cup \{x\}) = \argmax_{x}F(S_{t} \cup \{x\}) -F(S_
 \color{green} aleatoric) \color{black}, $\sigma_{t}^2(x)=Var(f(x)|y_{1:t})$ (Posterior)
 \begin{itemize}
     \item in the heterosced. case fails to distinguish aleatoric and epistemic unc.
-    \item most unc. outcomes are not necessarily most informative.
+%    \item most unc. outcomes are not necessarily most informative.
     \item F(S) is monotone submodular \textrightarrow uncertainty sampling provides constant factor approx.
     $\Forall {x \in D} \Forall {A \subseteq B \subseteq D} F(X|A) \geq F(X|B)$, Marginal gain: $F(X|A)= I(f; y_{x} | y_{A})$
+    \textrightarrow Constant factor approx: $F(S_{T}) \geq (1-\frac{1}{e}) \gamma_{T}$,
+    \textbf{maximum information gain} $\gamma_{T} = \max_{\abs{S} \leq T} I(f;y_{S}) = \max_{\abs{S} \leq T} F(S)$,
+    linear: $\gamma_{T} = \mathcal{O}(d \log T)$, RBF: $\gamma_{T} = \mathcal{O}((\log T)^{d+1})$
 \end{itemize}
 
 
@@ -46,43 +49,33 @@ uncertainty sampl is max. entropy of prdicted label: $x_{t+1} \in \argmax_{x}H(Y
 = - \sum_{y} \log p(y|x, x
 \item _{1:t}, y_{1:t})$
 BALD max. mutual information: $x_{t+1} \in \argmax_{x}I(\theta; y_{x}|x_{1:t}, y_{1:t})
-= - \sum_{y} \log p(y|x, x_{1:t}, y_{1:t}) = \underbrace{H(y|x, x_{1:t}, y_{1:t})}_{I} - $
-$\underbrace{\E[\theta \sim p(\cdot|x_{1:t}, y_{1:t})]{H(y|x, \theta)}}_{II}$
+= - \sum_{y} \log p(y|x, x_{1:t}, y_{1:t}) = \underset{I}{H(y|x, x_{1:t}, y_{1:t})} - $
+$\underset{II}{\E[\theta \sim p(\cdot|x_{1:t}, y_{1:t})]{H(y|x, \theta)}}$
 $I$: entropy of avg. (approx by predictive distr. of approx. posterior)
 $II$: average of entropy $\approx \frac{1}{m} \sum_{i=1}^{m}H(x, \theta^{(i)}),\ \theta^{(i)}\sim q(\cdot|y_{1:t})$
 
 \section{Baysian Optimization}
 How should we sequentially pick $x_{1},..x_{T}$ to find $\max_{x}f(x)$ with minimal samples.
 $f \sim GP(0,k)$, Posterior: $\E{f(x)|y_{1:t}}=\mu_{t}(x), Var(f(x)|y_{1:t})=\sigma_{t}^{2}(x)$,
-$\Delta_{t}(x) = \mu_{t}(x)-f^{*}\ f^{*}:=max_{i=1:t}y_{i}$ contant at any time t.
+$\Delta_{t}(x) = \mu_{t}(x)-f^{*}$, $f^{*}:=max_{i=1:t}y_{i}$ contant at any time t.
 \subsection{Aquisition functions}
 \begin{itemize}
-    \item $PI = \Phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
+    \item $PI = \Phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$,
     for $\Delta_{t}(x) >0$, $PI$ decreases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploitation
     \item $EI = \Delta_{t}(x)\Phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)}) +
-    \sigma_{t}^{2}(x) \phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$\\
-    Expectation of improvement $u(f(x)):= \max(0, f(x)-f^{*})$\\
+    \sigma_{t}^{2}(x) \phi(\frac{\Delta_{t}(x)}{\sigma_{t}^{2}(x)})$,
+    Expectation of improvement $u(f(x)):= \max(0, f(x)-f^{*})$,
     nonlinear, $EI$ increases with increasing $\sigma_{t}^{2}(x)$ \textrightarrow exploration
-    \item $UCB = \mu_{t}(x) + \beta \sigma_{t}^{2}(x) = \Delta_{t}(x) + \beta \sigma_{t}^{2}(x) + f^{*}$\\
+    \item $UCB = \mu_{t}(x) + \beta \sigma_{t}^{2}(x) = \Delta_{t}(x) + \beta \sigma_{t}^{2}(x) + f^{*}$,
     linear in $\Delta_{t}$ and $\sigma_{t}^{2}(x)$, larger $\beta$ \textrightarrow more exploration,
-    $\beta \lim \infty$: uncertainty sampling, $UCB$ non convex\\
+    $\beta \lim \infty$: uncertainty sampling, $UCB$ non convex,
     Set of plausible max $={x \in D: UCB_{t-1}(x) \geq \max_{x \in D} LCB_{t-1}(x)}$
 \end{itemize}
 
-maximum information gain $\gamma_{T} = \max_{\abs{S} \leq T} I(f;y_{S})$:
-\begin{itemize}
-    \item linear: $\gamma_{T} = \mathcal{O}(d \log T)$
-    \item RBF: $\gamma_{T} = \mathcal{O}((\log T)^{d+1})$
-\end{itemize}
-Guarantees for sublinear regret (i.e. convergence) \textrightarrow $\lim_{T \rightarrow \infty} \frac{R_{T}}{T} =0$,
-also vanishing instantaneous regret.
-\begin{itemize}
-    \item UCB:
-    $f \sim GP$: $\frac{R_{T}} = \sum_{t=1}^{T}(f(x^{*}-f(x_{t}))) = \mathcal{O}^{*}(\sqrt {\gamma_{T}T})$\\
-    $f \in H_{k}$: $R_{T} = \mathcal{O}(\sqrt {\beta_{T}\gamma_{T}T})$,
-    $\beta_{T} = \mathcal{O}(\norm{f}_{k} + log(T)^{3}\gamma_{T})$
-    \item EI: for $f \in H_{k}$ same as UCB
-\end{itemize}
+UCB Guarantees for sublinear regret (i.e. convergence) \textrightarrow $\lim_{T \rightarrow \infty} \frac{R_{T}}{T} =0$,
+$f \sim GP$: $R_{T} = \sum_{t=1}^{T}(f(x^{*}-f(x_{t}))) = \mathcal{O}^{*}(\sqrt {\gamma_{T}T})$,
+$f \in H_{k}$: $R_{T} = \mathcal{O}(\sqrt {\beta_{T}\gamma_{T}T})$,
+$\beta_{T} = \mathcal{O}(\norm{f}_{k} + log(T)^{3}\gamma_{T})$ (same for EI)
 
 
 
