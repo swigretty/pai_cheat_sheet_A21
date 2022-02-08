@@ -1,6 +1,6 @@
 \section{GPs}
 
-\subsection{Baysian Linear Regression}
+\textbf{Baysian Linear Regression}
 $Y= Xw + \epsilon$, $\color{red} \epsilon \sim \mathcal{N}(0, \sigma_{n}^{2})$, $w\sim \mathcal{N}(0, \sigma_{p}^{2})$
 $\prob{y_{i}|w}=\mathcal{N}(y_{i}; x_{i}^{\top}w, \sigma_{n}^{2})$,
 $
@@ -17,7 +17,7 @@ $\prob{w|X,y}=\mathcal{N}(\bar{\mu}, \bar{\Sigma}),\
 x^{*}^{\top}\bar{\Sigma}x^{*} + \sigma_{n}^{2}) = \int \prob{y^{*}|f^{*}} \prob{f^{*}| X, y, x^{*}} df^{*}$,
 $\prob{f^{*}| X, y, x^{*}} = \mathcal{N}(f^{*}; \bar{\mu}^{\top}x^{*}, x^{*}^{\top}\bar{\Sigma}x^{*})$
 
-\subsection{GP}
+\textbf{GP}
 $y_{A}=f(x_{A})+\epsilon_{A},\ f\sim GP(\mu, k), A=\{1,..n\}$
 $\begin{bmatrix} f(x) \\ y_{A}\end{bmatrix} = \begin{bmatrix} 1 \\ 1\end{bmatrix} f + \begin{bmatrix} 0 \\ 1 \end{bmatrix}\epsilon_{A}$
 $\sim \mathcal{N}\big( \begin{bmatrix} \mu(x) \\ \mu(x_{A})\end{bmatrix},
@@ -36,21 +36,21 @@ $\bar{k}(x,x')= k(x,x')-k_{xA}^{\top}(K_{AA}+\sigma_{n}^{2}I)^{-1}k_{xA}$\\
 %    k_{t}(x_{t+1},x') & k_{t}(x_{t+1},x'') & k_{t}(x_{t+1},x_{t+1})+\sigma_{n}^{2}\end{bmatrix}$
 
 
-\subsection{Baysian Model Selection}
+\textbf{Baysian Model Selection}
 Max Marginal likelihood: $\prob{y|x, \theta} = \int \prob {y|f,x,\theta}p(f|\theta)df$
 \textbf{Underfit:} prior is large and informed (small $\sigma_{p}^{2}$), likelihood flat (small for most f), Marginal likl. most mass on y close to prior mean
 \textbf{Overfit:} prior is small and uninformed (large $\sigma_{p}^{2}$), likelihood large for a few f, Marginal likl flat
 
 
-\subsection{Computational Complexity}
+\textbf{Computational Complexity}
 \begin{itemize}
     \item BLR: $\bar{\Sigma},\bar{\mu} = \mathcal{O}(nd^{2})$, GP: $\bar{k},\bar{\mu} = \mathcal{O}(n^{3})$
     \item FITC: $\mathcal{O}((\# of inducing points)^{3}) = \mathcal{O}(n)$
     \item Fourrier Features = $\mathcal{O}(nm^{2}+m^{3})$
-    \begin{itemize}
-        \item construct feater map $z(x)= \sqrt {\frac{2}{D}}\left[ \cos(\omega_{1}^{\top}x +b_{1}),
-            ...\cos(\omega_{m}^{\top}x +b_{m}) \right], \omega \sim$ "fourier trans of kernel",
-        $b \sim \text{Unif}(\left[ 0,2\pi \right])$
-    \end{itemize}
+%    \begin{itemize}
+%        \item construct feater map $z(x)= \sqrt {\frac{2}{D}}\left[ \cos(\omega_{1}^{\top}x +b_{1}),
+%            ...\cos(\omega_{m}^{\top}x +b_{m}) \right], \omega \sim$ "fourier trans of kernel",
+%        $b \sim \text{Unif}(\left[ 0,2\pi \right])$
+%    \end{itemize}
 \end{itemize}
 

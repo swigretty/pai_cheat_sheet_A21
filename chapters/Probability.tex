@@ -1,7 +1,6 @@
 \section{Probability}
-\subsection{Normal dist.}
-$\mathcal{N}(x\:|\: \mu, \sigma^{2}) = \frac{1}{\sigma \sqrt{2\pi}}\exp\bb{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}}$\\
-
+\textbf{Normal dist.}
+$\mathcal{N}(x\:|\: \mu, \sigma^{2}) = \frac{1}{\sigma \sqrt{2\pi}}\exp\bb{-\frac{1}{2\sigma^{2}}(x - \mu)^{2}}$,
 $\mathcal{N}_{n}(\bm{x}\:|\: \bm{\mu}, \bm{\Sigma}) =
 (2\pi)^{-\frac{n}{2}}\det(\bm{\Sigma})^{-\frac{1}{2}}\exp \big(-\frac{1}{2}(\bm{x} -
 \bm{\mu})^{\top}\bm{\Sigma}^{-1}(\bm{x} - \bm{\mu}) \big)$\\
@@ -12,14 +11,14 @@ $\mathcal{N}_{n}(\bm{x}\:|\: \bm{\mu}, \bm{\Sigma}) =
 $\mu_{A|B}=\mu_A+\Sigma_{AB}\Sigma^{-1}_{BB}(x_B-\mu_B)$,
 $\Sigma_{A|B}=\Sigma_{AA}-\Sigma_{AB}\Sigma^{-1}_{BB}\Sigma_{BA}$
 
-\subsection{Categorical dist.}
-Let $\bm{\pi} = [\pi_{1}, \dots, \pi_{m}]$, $\pi_{j}$ represents the probability of seeing element $j$ and
-$\sum_{j=1}^{m}\pi_{j} = 1$
-$\prob{y}[\bm{\pi}] = \prod_{j=1}^{m}\pi_{j}^{\mathbbm{1}[y = j]}$,
-$\pi_{j}=\text{softmax}(w^{\top}x)_{j} = \prob{Y=j}[\bm{x,w}] \overset{\text{y one-hot}}{=}
-\frac{\exp(w_{j}^{\top}x)}{\sum_{j=1}^{m}\exp(w_{j}^{\top}x)}$,
-$\text{CE} (\bm{y},\bm{w})=-\sum_{j=1}^{m}\sum_{i=1}^{n}1\cset{y_{i}=j}* \log (\text{softmax}(\bm{w}^{\top}x_{i})_{j})$,
-$\lext{Logistic} (\bm{y},\bm{w}) \overset{y\epsilon\{0,1\}}{=} -\sum_{i=1}^{n}(y_{i}\log(
+\textbf{Categorical dist.}
+%Let $\bm{\pi} = [\pi_{1}, \dots, \pi_{m}]$, $\pi_{j}$ represents the probability of seeing element $j$ and
+%$\sum_{j=1}^{m}\pi_{j} = 1$
+%$\prob{y}[\bm{\pi}] = \prod_{j=1}^{m}\pi_{j}^{\mathbbm{1}[y = j]}$,
+%$\pi_{j}=\text{softmax}(w^{\top}x)_{j} = \prob{Y=j}[\bm{x,w}] \overset{\text{y one-hot}}{=}
+%\frac{\exp(w_{j}^{\top}x)}{\sum_{j=1}^{m}\exp(w_{j}^{\top}x)}$,
+%$\text{CE} (\bm{y},\bm{w})=-\sum_{j=1}^{m}\sum_{i=1}^{n}1\cset{y_{i}=j}* \log (\text{softmax}(\bm{w}^{\top}x_{i})_{j})$,
+$\text{Logist} (\bm{y},\bm{w}) \overset{y\epsilon\{0,1\}}{=} -\sum_{i=1}^{n}(y_{i}\log(
 \sigma(\bm{w}^{\top}x_{i}))+(1-y_{i})\log(1-\sigma(\bm{w}^{\top}x_{i})))
 \overset{y\epsilon\{-1,1\}}{=}\sum_{i=1}^{n}\log(1+\exp(-y_{i}\bm{w}^{\top}x_{i}))$;
 where
@@ -27,21 +26,21 @@ $\pi = \sigma(\bm{w}^{\top}x) = \prob{Y=1}[\bm{x,w}] = \frac{exp(\bm{w}^{\top}x)
 \frac{1}{1 + exp(-\bm{w}^{\top}x)}$. $\prob{y}[\bm{x,w}] \overset{y\epsilon\{-1,1\}}{=}
 \frac{1}{1 + exp(-y\bm{w}^{\top}x)}$ \\
 
-\begin{itemize}
-    \item $X \sim Binom(n, \theta): p(x|\theta) = \binom{n}{k}p^{k}(1-p)^{n-k}$, $\E {X}=np$, $Var(X)=np(1-p)$,
-$\binom{n}{k} = \frac{n!}{k!(n-k)!}$
-    \item $X \sim Lap(\mu, b)$, $\E {X} = \mu$, $\hat{\mu_{MLE}}$ = Median, $Var(X) = 2 b^2$
-    \item $X \sim Unif(a, b)$, $x \in \left[ a,b \right]$,
-$p(x|a,b) = \frac{1}{b-a} 1_{\left[ a,b \right]}(x)$,
-$\E {X} = \frac{1}{2}(a+b)$, $\hat{\mu_{MLE}} = \frac{X_{(1)} + X_{(n)}}{2}$,
-$Var(X) = \frac{1}{12}(b-a)^2$
-    \item $X \sim Pois(\theta)$, $\theta > 0$, $x \in (0, \infty)$,
-$p(x|\theta) = \exp (x \log(\theta)- \theta) \frac{1}{x!})$,
-$\E {X} = \theta = Var(X)$
-    \item $X \sim Exp(\theta)$, $p(x| \theta) = \exp ( \log(\theta) - \theta x)$
-$\E {X} = \frac{1}{\theta}$,  $Var(X) =\frac{1}{\theta^2}$, $H(p) = 1- \log (\theta)$
-
-\end{itemize}
+%\begin{itemize}
+%    \item $X \sim Binom(n, \theta): p(x|\theta) = \binom{n}{k}p^{k}(1-p)^{n-k}$, $\E {X}=np$, $Var(X)=np(1-p)$,
+%$\binom{n}{k} = \frac{n!}{k!(n-k)!}$
+%    \item $X \sim Lap(\mu, b)$, $\E {X} = \mu$, $\hat{\mu_{MLE}}$ = Median, $Var(X) = 2 b^2$
+%    \item $X \sim Unif(a, b)$, $x \in \left[ a,b \right]$,
+%$p(x|a,b) = \frac{1}{b-a} 1_{\left[ a,b \right]}(x)$,
+%$\E {X} = \frac{1}{2}(a+b)$, $\hat{\mu_{MLE}} = \frac{X_{(1)} + X_{(n)}}{2}$,
+%$Var(X) = \frac{1}{12}(b-a)^2$
+%    \item $X \sim Pois(\theta)$, $\theta > 0$, $x \in (0, \infty)$,
+%$p(x|\theta) = \exp (x \log(\theta)- \theta) \frac{1}{x!})$,
+%$\E {X} = \theta = Var(X)$
+%    \item $X \sim Exp(\theta)$, $p(x| \theta) = \exp ( \log(\theta) - \theta x)$
+%$\E {X} = \frac{1}{\theta}$,  $Var(X) =\frac{1}{\theta^2}$, $H(p) = 1- \log (\theta)$
+%
+%\end{itemize}
 
 %\subsection{Multinomial dist.}
 %Let $n$ number of trials, $p_{1}, \dots, p_{k}$ event prob., $x_{i} \in \cset{0, \dots, n}$ with
@@ -49,24 +48,25 @@ $\E {X} = \frac{1}{\theta}$,  $Var(X) =\frac{1}{\theta^2}$, $H(p) = 1- \log (\th
 %$\E{X_{i}} = np_{i}, \Var{X_{i}} = np_{i}(1 - p_{i})$.
 
 
+%
+%\subsection{Bayes}
+%$\prob{A_{i}}[B] = \frac{\prob{B}[A_{i}]\prob{A_{i}}}{\prob{B}} \overset{\text{t.p.}}{=}
+%\frac{\prob{B}[A_{i}]\prob{A_{i}}}{\sum_{j}\prob{B}[A_{j}]\prob{A_{j}}}$
+%
+%\subsection{MLE}
+%Which $\theta$ most likely generated data $D$:
+%$\hat{\theta}_{\text{MLE}} \triangleq \argmax_{\theta}\prob{D}[\theta] = \argmax_{\theta}\log\prob{D}[\theta].$
+%Note: $\prob{D}[\theta] = \prod_{i=1}^{n}\prob{D_{i}}[\theta]$, because i.i.d. is assumed.
 
-\subsection{Bayes}
-$\prob{A_{i}}[B] = \frac{\prob{B}[A_{i}]\prob{A_{i}}}{\prob{B}} \overset{\text{t.p.}}{=}
-\frac{\prob{B}[A_{i}]\prob{A_{i}}}{\sum_{j}\prob{B}[A_{j}]\prob{A_{j}}}$
-
-\subsection{MLE}
-Which $\theta$ most likely generated data $D$:
-$\hat{\theta}_{\text{MLE}} \triangleq \argmax_{\theta}\prob{D}[\theta] = \argmax_{\theta}\log\prob{D}[\theta].$
-Note: $\prob{D}[\theta] = \prod_{i=1}^{n}\prob{D_{i}}[\theta]$, because i.i.d. is assumed.
-
-\subsection{MAP}
-Which $\theta$ maximises the posterior:
-$\hat{\theta}_{MAP} \triangleq \argmax_{\theta}\prob{\theta}[D] \overset{\text{Bayes}}{=}
-\argmax_{\theta}\log\prob{D}[\theta] + \log\prob{\theta}$\\
-For: $y=w^{\top}x + \epsilon, \epsilon \sim \mathcal{N}(0, \sigma_{n}^{2}), w \sim \mathcal{N}(0, \sigma_{p}^{2})$:
-Gaussian prior: $+\frac{\sigma_{n}^{2}}{\sigma_{p}^{2}} \norm{w}_{2}^{2}$
+\textbf{MAP}
+%Which $\theta$ maximises the posterior:
+%$\hat{\theta}_{MAP} \triangleq \argmax_{\theta}\prob{\theta}[D] \overset{\text{Bayes}}{=}
+%\argmax_{\theta}\log\prob{D}[\theta] + \log\prob{\theta}$\\
+For: $y=w^{\top}x + \epsilon, \epsilon \sim \mathcal{N}(0, \sigma_{n}^{2})$:
+Gaussian prior: $+\frac{\sigma_{n}^{2}}{\sigma_{p}^{2}} \norm{w}_{2}^{2}$,
+$w_{LS} = w_{MLE}\overset{\sigma_{p}^{2} \rightarrow \infty}{=} w_{MAP}$,
 Laplace prior: $+\frac{2\sigma_{n}^{2}}{b} \norm{w}_{1}$
-$w_{LS} = w_{MLE}\overset{\sigma_{p}^{2} \rightarrow \infty}{=} w_{MAP}$
+
 
 \subsection{Exp \& Var \& Cov(can be neg)}
 \subsubsection{Random Variables $X,Y \in R$} \label{random vars}
@@ -112,7 +112,7 @@ $w_{LS} = w_{MLE}\overset{\sigma_{p}^{2} \rightarrow \infty}{=} w_{MAP}$
 %Intersection: $(X \perp Y$ | $W, Z) \wedge (X \perp W$ | $Y, Z) \Rightarrow X \perp Y, W$ | $Z$
 
 
-\subsection{Law of Large Number}
+\textbf{Law of Large Number}
 $\E[\theta \sim p(\theta|y_{1:n})]{p(y^{*}|x^{*}, \theta)} =
 \lim\limits_{N \to \infty} \frac{1}{N} \sum_{i=1}^{N}p(y^{*}|x^{*}, \theta_{i})$, $\theta_{i}$ iid from $p(\theta|y_{1:n})$
 
