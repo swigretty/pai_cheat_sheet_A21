@@ -1,0 +1,161 @@
+\documentclass[5pt,landscape,a4paper,fleqn]{article}
+\usepackage[dvipsnames]{xcolor}
+% https://www.overleaf.com/learn/latex/Using_colours_in_LaTeX#Reference_guide
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes,positioning,arrows,fit,calc,graphs,graphs.standard}
+\usepackage[nosf]{kpfonts}
+\usepackage[t1]{sourcesanspro}
+%\usepackage[lf]{MyriadPro}
+%\usepackage[lf,minionint]{MinionPro}
+\usepackage{multicol}
+\usepackage{wrapfig}
+\usepackage[top=0mm,bottom=3mm,left=1mm,right=1mm]{geometry}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{microtype}
+\usepackage{soul}
+
+% From Joshuas
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{wasysym}
+\setlist[enumerate,1]{label=\arabic*)}
+\setlist{topsep=0pt, leftmargin=*, noitemsep,parsep=0pt,partopsep=0pt} % make super compact lists
+
+
+
+
+\let\bar\overline
+
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+% \definecolor{myorange}{cmyk}{0,0.5,1,0}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\everymath\expandafter{\the\everymath \color{myblue}}
+\everydisplay\expandafter{\the\everydisplay \color{myblue}}
+
+\renewcommand{\baselinestretch}{.8}
+\pagestyle{empty}
+
+\global\mdfdefinestyle{header}{%
+linecolor=gray,linewidth=1pt,%
+leftmargin=0mm,rightmargin=0mm,skipbelow=0mm,skipabove=0mm,
+}
+
+\newcommand{\header}{
+\begin{mdframed}[style=header]
+\footnotesize
+\sffamily
+Cheat sheet\\
+Ines Pereira,~page~\thepage~of~2
+\end{mdframed}
+}
+
+% From Joshua
+\providecommand{\abs}[1]{\left\lvert#1\right\rvert}
+\providecommand{\norm}[1]{\left\lVert#1\right\rVert}
+\providecommand{\dotp}[1]{\left\langle#1\right\rangle}
+\providecommand{\R}{\mathds{R}}
+\providecommand{\func}[3]{#1: #2 \rightarrow #3}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\NewDocumentCommand{\bb}{m}{\left(#1\right)} % big braces
+
+\NewDocumentCommand{\Forall}{s m}{%
+  \IfBooleanTF{#1}{\forall#2,\quad}{\forall#2,\;}%
+}
+
+\NewDocumentCommand{\Exists}{s m}{%
+  \IfBooleanTF{#1}{\exists#2,\quad}{\exists #2,\;}%
+}
+
+\NewDocumentCommand{\cset}{s m O{}}{% set notation
+  \def\temp{#3}%
+  \ifx\temp\empty%
+    \IfBooleanTF{#1}{\left\{#2\right\}}{\{#2\}}%
+  \else%
+    \IfBooleanTF{#1}{\left\{#2 \ | \ #3\right\}}{\{#2 \ | \ #3\}}%
+  \fi%
+}
+
+\NewDocumentCommand{\E}{s O{} m O{}}{%
+  \def\tempone{#2}\def\temptwo{#4}%
+  \ifx\tempone\empty%
+    \ifx\temptwo\empty%
+      \IfBooleanTF{#1}{\mathds{E}\left[#3\right]}{\mathds{E}[#3]}%
+    \else%
+      \IfBooleanTF{#1}{\mathds{E}\left[#3 \:|\: #4\right]}{\mathds{E}[#3 \:|\: #4]}%
+    \fi%
+  \else%
+    \ifx\temptwo\empty%
+      \IfBooleanTF{#1}{\mathds{E}_{#2}\left[#3\right]}{\mathds{E}_{#2}[#3]}%
+    \else%
+      \IfBooleanTF{#1}{\mathds{E}_{#2}\left[#3 \:|\: #4\right]}{\mathds{E}_{#2}[#3 \:|\: #4]}%
+    \fi%
+  \fi%
+}
+
+\newcommand{\cDist}[3]{#1\left( #2 \,\middle|\, #3 \right)}
+
+
+
+% ALGORITHMS
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{textcomp}
+\usepackage{color}
+\SetKwProg{Fn}{Function}{}{}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\SetKwInput{KwIn}{In}
+\SetKwInput{KwOut}{Out}
+\SetKw{KwBreak}{break}
+
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {.2ex}%
+                                {.2ex}%x
+                                {\color{Maroon}\sffamily\small\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+                                {.2ex}%
+                                {.2ex}%x
+                                {\color{OliveGreen}\sffamily\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}%
+                                {.2ex}%
+                                {.2ex}%x
+                                {\color{Black}\sffamily\bfseries}}
+
+
+\makeatother
+\setlength{\parindent}{0pt}
+
+
+\NewDocumentCommand{\prob}{s O{} m O{}}{% probability
+  \def\tempone{#2}\def\temptwo{#4}%
+  \ifx\tempone\empty%
+    \ifx\temptwo\empty%
+      \IfBooleanTF{#1}{\mathrm{P}\left[#3\right]}{\mathrm{P}[#3]}%
+    \else%
+      \IfBooleanTF{#1}{\mathrm{P}\left[#3 \: \middle| \: #4\right]}{\mathrm{P}[#3 \:|\: #4]}%
+    \fi%
+  \else%
+    \ifx\temptwo\empty%
+      \IfBooleanTF{#1}{\mathrm{P}_{#2}\left[#3\right]}{\mathrm{P}_{#2}[#3]}%
+    \else%
+      \IfBooleanTF{#1}{\mathrm{P}_{#2}\left[#3 \: \middle| \: #4\right]}{\mathrm{P}_{#2}[#3 \:|\: #4]}%
+    \fi%
+  \fi%
+}
+
+
+\begin{document}
+\small
+\begin{multicols*}{4}
+\input{chapters_stat_mod/Probability.tex}
+\end{multicols*}
+\end{document}
